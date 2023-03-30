@@ -1,8 +1,8 @@
 package eu.europa.ec.euidw.prex.internal
 
 import eu.europa.ec.euidw.prex.*
-import eu.europa.ec.euidw.prex.FieldQueryResult.Candidate.Found
-import eu.europa.ec.euidw.prex.FieldQueryResult.Candidate.OptionalFieldNotFound
+import eu.europa.ec.euidw.prex.FieldQueryResult.CandidateField.Found
+import eu.europa.ec.euidw.prex.FieldQueryResult.CandidateField.OptionalFieldNotFound
 import eu.europa.ec.euidw.prex.FieldQueryResult.RequiredFieldNotFound
 
 

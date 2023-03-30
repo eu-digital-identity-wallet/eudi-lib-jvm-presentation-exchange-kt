@@ -6,7 +6,7 @@ import kotlin.test.Test
 
 class PresentationDefinitionTest {
 
-    private val parser = PresentationExchange.parser
+
 
     @Test
     fun `format test`() {
@@ -23,26 +23,26 @@ class PresentationDefinitionTest {
     @Test
     fun `single group example`() {
         testParseDefinition("v2.0.0/presentation-definition/single_group_example.json").also {
-            it.submissionRequirements?.forEach{ x->println(x)}
+            it.submissionRequirements?.forEach { x -> println(x) }
         }
     }
 
     @Test
     fun `multi group example`() {
         testParseDefinition("v2.0.0/presentation-definition/multi_group_example.json").also {
-            it.submissionRequirements?.forEach{ x->println(x)}
+            it.submissionRequirements?.forEach { x -> println(x) }
         }
     }
 
     @Test
     fun `mDL example`() {
         testParseDefinition("v2.0.0/presentation-definition/mDL-example.json").also {
-            it.submissionRequirements?.forEach{ x->println(x)}
+            it.submissionRequirements?.forEach { x -> println(x) }
         }
     }
 
     private fun testParseDefinition(f: String): PresentationDefinition =
-        parser.decodePresentationDefinition(load(f)!!)
+        PresentationExchange.parser.decodePresentationDefinition(load(f)!!)
             .also { println(it) }
             .fold(onSuccess = { it }, onFailure = { fail(it) })
 

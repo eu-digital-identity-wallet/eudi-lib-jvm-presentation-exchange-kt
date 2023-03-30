@@ -2,7 +2,7 @@
 
 ## In a nutshell
 
-Presentation exchange is a specification that defines:
+[Presentation Exchange v2](https://identity.foundation/presentation-exchange/spec/v2.0.0/) is a specification that defines:
 
 * A way for the `Verifier` to describe proof requirements in terms of `PresentationDefintion` object
 * A way for the `Holder` to describe submissions of proofs that allign with those requirements in terms of a `PresentationSubmission`
@@ -92,11 +92,6 @@ classDiagram
 * JsonSchema: [Json Kotlin Schema](https://github.com/pwall567/json-kotlin-schema)
 * JsonPath: [JsonPathKt](https://github.com/codeniko/JsonPathKt)
 
-
-
-#### JSON Schema (optional)
-
-Presentation Exchange spec provides a set of [JSON Schemas](https://github.com/decentralized-identity/presentation-exchange/tree/main/schemas/v2.0.0) that define the structure of the data model (`PresentationDefintion`, `PresentationSubmission` etc.). It is expected that comformant libraries adhere to those schemas.
 
 ### References
 

@@ -1,9 +1,9 @@
 package eu.europa.ec.euidw.prex.internal
 
 import eu.europa.ec.euidw.prex.*
-import eu.europa.ec.euidw.prex.FieldQueryResult.Candidate
+import eu.europa.ec.euidw.prex.FieldQueryResult.CandidateField
 import eu.europa.ec.euidw.prex.FieldQueryResult.RequiredFieldNotFound
-import eu.europa.ec.euidw.prex.InputDescriptorEvaluation.CandidateFound
+import eu.europa.ec.euidw.prex.InputDescriptorEvaluation.CandidateClaim
 import eu.europa.ec.euidw.prex.InputDescriptorEvaluation.NotMatchedFieldConstraints
 
 /**
@@ -15,21 +15,37 @@ internal class InputDescriptorEvaluator(private val fieldConstraintMatcher: Fiel
      * Evaluates whether a given [claim] satisfies a set of [inputDescriptors]
      */
     internal fun matchInputDescriptors(
+        presentationDefinitionFormat: Format?,
         inputDescriptors: Iterable<InputDescriptor>,
         claim: Claim
     ): Map<InputDescriptorId, InputDescriptorEvaluation> {
         val claimJsonString = claim.asJsonString()
-        return inputDescriptors.associate { it.id to evaluate(it, claimJsonString) }
+        return inputDescriptors.associate { it.id to evaluate(presentationDefinitionFormat, it, claim.format, claimJsonString) }
     }
 
     /**
      * Evaluates whether a given [claimJsonString] satisfies a  [inputDescriptor]
      */
     private fun evaluate(
+        presentationDefinitionFormat: Format?,
         inputDescriptor: InputDescriptor,
+        claimFormat: ClaimFormat,
         claimJsonString: JsonString
-    ): InputDescriptorEvaluation =
-        checkFieldConstraints(inputDescriptor.constraints.fields(), claimJsonString)
+    ): InputDescriptorEvaluation {
+        val supportedFormat = isFormatSupported(inputDescriptor, presentationDefinitionFormat, claimFormat)
+        return if (!supportedFormat) InputDescriptorEvaluation.UnsupportedFormat
+        else checkFieldConstraints(inputDescriptor.constraints.fields(), claimJsonString)
+    }
+
+    private fun isFormatSupported(
+        inputDescriptor: InputDescriptor,
+        presentationDefinitionFormat: Format?,
+        claimFormat: ClaimFormat
+    ): Boolean =
+        (inputDescriptor.format ?: presentationDefinitionFormat)
+            ?.supportedClaimFormats
+            ?.map { it.type }
+            ?.contains(claimFormat) ?: true
 
 
     private fun checkFieldConstraints(
@@ -45,8 +61,8 @@ internal class InputDescriptorEvaluator(private val fieldConstraintMatcher: Fiel
             fieldQueryResults.filterValues { it is RequiredFieldNotFound }.keys
 
         return when {
-            notMatchedFieldConstraints.isNotEmpty() -> NotMatchedFieldConstraints(notMatchedFieldConstraints)
-            else -> CandidateFound(fieldQueryResults.mapValues { it.value as Candidate })
+            notMatchedFieldConstraints.isNotEmpty() -> NotMatchedFieldConstraints
+            else -> CandidateClaim(fieldQueryResults.mapValues { it.value as CandidateField })
         }
     }
 }

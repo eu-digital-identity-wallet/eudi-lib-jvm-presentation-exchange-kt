@@ -1,11 +1,11 @@
 package eu.europa.ec.euidw.prex
 
+import eu.europa.ec.euidw.prex.FieldQueryResult.CandidateField
+import eu.europa.ec.euidw.prex.FieldQueryResult.CandidateField.*
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import kotlinx.serialization.json.putJsonObject
-import eu.europa.ec.euidw.prex.FieldQueryResult.Candidate
-import eu.europa.ec.euidw.prex.FieldQueryResult.Candidate.*
 import java.io.InputStream
 
 
@@ -18,15 +18,15 @@ private fun load(f: String): InputStream? =
 
 
 private fun printResult(match: Match) {
-    fun Candidate.str(): String = when (this) {
+    fun CandidateField.str(): String = when (this) {
         is Found -> "in path ${path.value} with content ${content.value}}"
         is OptionalFieldNotFound -> "not present but was optional"
         is PredicateEvaluated -> "in path ${path.value} predicated evaluated to $predicateEvaluation"
     }
 
     fun InputDescriptorEvaluation.str() = when (this) {
-        is InputDescriptorEvaluation.NotMatchedFieldConstraints -> "Not matched"
-        is InputDescriptorEvaluation.CandidateFound -> "Matched\n\t\t\t" + matches.entries.mapIndexed { index, entry ->
+        is InputDescriptorEvaluation.NotMatchingClaim -> "Not matched"
+        is InputDescriptorEvaluation.CandidateClaim -> "Matched\n\t\t\t" + matches.entries.mapIndexed { index, entry ->
             val (_, queryResult) = entry
 
             "FieldConstraint no:$index  was matched  ${queryResult.str()}"
@@ -39,21 +39,22 @@ private fun printResult(match: Match) {
     when (match) {
         is Match.NotMatched -> {
             println("Failed to match presentation definition.")
-            match.details.forEach{
+            match.details.forEach {
                 val (inputDescriptorId, notMatchedPerClaim) = it
                 println("\t${inputDescriptorId.str()}")
-                notMatchedPerClaim.forEach{entry->
+                notMatchedPerClaim.forEach { entry ->
                     val (claimId, evaluation) = entry
                     println("\t\tClaim $claimId ${evaluation.str()}")
                 }
             }
         }
+
         is Match.Matched -> {
             println("Matched presentation definition.")
-            match.matches.forEach{
+            match.matches.forEach {
                 val (inputDescriptorId, candidatesPerClaim) = it
                 println("\t${inputDescriptorId.str()}")
-                candidatesPerClaim.forEach{entry->
+                candidatesPerClaim.forEach { entry ->
                     val (claimId, evaluation) = entry
                     println("\t\tClaim $claimId ${evaluation.str()}")
                 }
@@ -63,31 +64,33 @@ private fun printResult(match: Match) {
 }
 
 
-
 val bankAccount = SimpleClaim(
     uniqueId = "bankAccountClaim",
+    format = ClaimFormat.LdpType.LDP,
     value = buildJsonObject {
-    putJsonObject("vc") {
-        put("issuer", "did:example:123")
-        putJsonObject("credentialSchema") {
-            put("id", "https://bank-standards.example.com/fullaccountroute.json")
+        putJsonObject("vc") {
+            put("issuer", "did:example:123")
+            putJsonObject("credentialSchema") {
+                put("id", "https://bank-standards.example.com/fullaccountroute.json")
+            }
         }
-    }
-})
+    })
 val passport = SimpleClaim(
     uniqueId = "samplePassport",
+    format = ClaimFormat.LdpType.LDP,
     value = buildJsonObject {
-        putJsonObject("credentialSchema"){
+        putJsonObject("credentialSchema") {
             put("id", "hub://did:foo:123/Collections/schema.us.gov/passport.json")
         }
-        putJsonObject("credentialSubject"){
+        putJsonObject("credentialSubject") {
             put("birth_date", "1974-02-11")
         }
     }
 )
 
 
-data class SimpleClaim(override val uniqueId: String, private val value: JsonObject) : Claim {
+data class SimpleClaim(override val uniqueId: String, override val format: ClaimFormat, private val value: JsonObject) :
+    Claim {
     override fun asJsonString(): JsonString = JsonString(value.toString())
 }
 

@@ -18,7 +18,7 @@ internal class DefaultPresentationMatcher(
     override fun match(pd: PresentationDefinition, claims: List<Claim>): Match {
         // Evaluate the input descriptor match for all descriptors and claims
         val claimsEvaluation = claims.associate { claim ->
-            claim.uniqueId to inputDescriptorEvaluator.matchInputDescriptors(pd.inputDescriptors, claim)
+            claim.uniqueId to inputDescriptorEvaluator.matchInputDescriptors(pd.format, pd.inputDescriptors, claim)
         }
         // split evaluations to candidate and not matching
         val (candidateClaims, notMatchingClaims) = splitPerDescriptor(pd, claimsEvaluation)
@@ -36,7 +36,7 @@ internal class DefaultPresentationMatcher(
     private fun interface Evaluator {
         fun evaluate(
             pd: PresentationDefinition,
-            candidateClaims: InputDescriptorEvalPerClaim<InputDescriptorEvaluation.CandidateFound>,
+            candidateClaims: InputDescriptorEvalPerClaim<InputDescriptorEvaluation.CandidateClaim>,
             notMatchingClaims: InputDescriptorEvalPerClaim<InputDescriptorEvaluation.NotMatchedFieldConstraints>
         ): Match
     }
@@ -53,14 +53,14 @@ internal class DefaultPresentationMatcher(
     private fun splitPerDescriptor(
         pd: PresentationDefinition,
         claimsEvaluation: ClaimsEvaluation
-    ): Pair<InputDescriptorEvalPerClaim<InputDescriptorEvaluation.CandidateFound>, InputDescriptorEvalPerClaim<InputDescriptorEvaluation.NotMatchedFieldConstraints>> {
+    ): Pair<InputDescriptorEvalPerClaim<InputDescriptorEvaluation.CandidateClaim>, InputDescriptorEvalPerClaim<InputDescriptorEvaluation.NotMatchedFieldConstraints>> {
         val candidateClaimsPerDescriptor =
-            mutableMapOf<InputDescriptorId, Map<ClaimId, InputDescriptorEvaluation.CandidateFound>>()
+            mutableMapOf<InputDescriptorId, Map<ClaimId, InputDescriptorEvaluation.CandidateClaim>>()
         val notMatchingClaimsPerDescriptor =
             mutableMapOf<InputDescriptorId, Map<ClaimId, InputDescriptorEvaluation.NotMatchedFieldConstraints>>()
 
         fun updateCandidateClaims(i: InputDescriptor) {
-            val candidateClaims = claimsEvaluation.entriesFor<InputDescriptorEvaluation.CandidateFound>(i.id)
+            val candidateClaims = claimsEvaluation.entriesFor<InputDescriptorEvaluation.CandidateClaim>(i.id)
             if (candidateClaims.isNotEmpty()) {
                 candidateClaimsPerDescriptor[i.id] = candidateClaims
             }
