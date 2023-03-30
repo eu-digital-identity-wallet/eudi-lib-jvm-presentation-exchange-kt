@@ -1,6 +1,7 @@
 package eu.europa.ec.euidw.prex
 
-import eu.europa.ec.euidw.prex.internal.*
+import eu.europa.ec.euidw.prex.internal.DefaultJsonParser
+import eu.europa.ec.euidw.prex.internal.DefaultPresentationMatcher
 import kotlinx.serialization.json.Json
 
 /**
@@ -8,19 +9,18 @@ import kotlinx.serialization.json.Json
  */
 object PresentationExchange {
 
-
     /**
      * Kotlinx JSON serialization
      */
-    private val jsonFormat: Json by lazy { Json { ignoreUnknownKeys = true } }
+    private val json: Json by lazy { Json { ignoreUnknownKeys = true } }
 
     /**
      * JSON serialization/deserialization
      */
-    val parser: Parser by lazy { DefaultParser(jsonFormat) }
+    val jsonParser: JsonParser by lazy { DefaultJsonParser(json) }
 
     /**
      * Matching of credentials to a presentation definition
      */
-    val matcher: PresentationMatcher by lazy { DefaultPresentationMatcher.build(jsonFormat) }
+    val matcher: PresentationMatcher by lazy { DefaultPresentationMatcher.build(json) }
 }

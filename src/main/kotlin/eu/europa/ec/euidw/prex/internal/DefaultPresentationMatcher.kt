@@ -2,6 +2,7 @@ package eu.europa.ec.euidw.prex.internal
 
 import eu.europa.ec.euidw.prex.*
 import eu.europa.ec.euidw.prex.internal.DefaultPresentationMatcher.Evaluator
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 /**
@@ -128,8 +129,8 @@ internal class DefaultPresentationMatcher(
 
     companion object {
 
-        fun build(jsonFormat: Json): PresentationMatcher {
-            val filterOps = FilterOps(jsonFormat)
+        fun build(json: Json): PresentationMatcher {
+            val filterOps = FilterOps { json.encodeToString(it) }
             val fieldMatcher = FieldConstraintMatcher(filterOps)
             val inputDescriptorEvaluator = InputDescriptorEvaluator(fieldMatcher)
             return DefaultPresentationMatcher(inputDescriptorEvaluator)

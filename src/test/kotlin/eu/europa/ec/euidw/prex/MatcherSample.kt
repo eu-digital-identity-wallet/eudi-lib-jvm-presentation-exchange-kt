@@ -10,7 +10,7 @@ import java.io.InputStream
 
 
 private fun loadPresentationDefinition(f: String): PresentationDefinition =
-    PresentationExchange.parser.decodePresentationDefinition(load(f)!!).getOrThrow()
+    PresentationExchange.jsonParser.decodePresentationDefinition(load(f)!!).getOrThrow()
 
 
 private fun load(f: String): InputStream? =

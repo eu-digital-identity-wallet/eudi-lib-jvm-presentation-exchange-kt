@@ -7,20 +7,18 @@ import kotlinx.serialization.json.Json
 import net.pwall.json.schema.JSONSchema
 
 
-internal class FilterOps(private val format: Json) {
+internal class FilterOps(private val filterSerializer: (Filter)->String) {
 
     /**
      * Checks whether a given [json][JsonString] satisfies the
      * constraints described in the [Filter]
      */
-    internal fun Filter.isMatchedBy(json: JsonString): Boolean =
-        toSchema().validate(json.value, net.pwall.json.pointer.JSONPointer.root)
+    internal fun Filter.isMatchedBy(j: JsonString): Boolean = isValid(this, j)
 
-    /**
-     * Converts the [Filter] to [JSONSchema]
-     */
-    private fun Filter.toSchema(): JSONSchema {
-        val jsonStr = format.encodeToString(this)
-        return JSONSchema.parse(jsonStr)
+    private fun isValid(f: Filter, j: JsonString): Boolean {
+        val jsonStr = filterSerializer(f)
+        val jsonSchema =  JSONSchema.parse(jsonStr)
+        return jsonSchema.validate(j.value, net.pwall.json.pointer.JSONPointer.root)
     }
+
 }

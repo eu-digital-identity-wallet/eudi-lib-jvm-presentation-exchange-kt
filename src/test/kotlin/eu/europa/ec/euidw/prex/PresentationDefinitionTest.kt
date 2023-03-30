@@ -42,7 +42,7 @@ class PresentationDefinitionTest {
     }
 
     private fun testParseDefinition(f: String): PresentationDefinition =
-        PresentationExchange.parser.decodePresentationDefinition(load(f)!!)
+        PresentationExchange.jsonParser.decodePresentationDefinition(load(f)!!)
             .also { println(it) }
             .fold(onSuccess = { it }, onFailure = { fail(it) })
 

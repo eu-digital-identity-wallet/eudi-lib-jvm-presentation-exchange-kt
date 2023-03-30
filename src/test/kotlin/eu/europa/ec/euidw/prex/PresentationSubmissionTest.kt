@@ -6,7 +6,7 @@ import java.io.InputStream
 
 class PresentationSubmissionTest {
 
-    private val parser = PresentationExchange.parser
+    private val parser = PresentationExchange.jsonParser
 
 
     @Test
