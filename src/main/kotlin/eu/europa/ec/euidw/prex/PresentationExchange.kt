@@ -12,6 +12,7 @@ object PresentationExchange {
     /**
      * Kotlinx JSON serialization
      */
+    // TODO Perhaps the ignoreUnknownKeys needs to be removed
     private val json: Json by lazy { Json { ignoreUnknownKeys = true } }
 
     /**

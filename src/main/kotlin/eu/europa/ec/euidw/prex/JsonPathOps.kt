@@ -19,14 +19,15 @@ internal object JsonPathOps {
      * at [path][jsonPath]. Returns the [JsonString] found at the path, if found
      */
     internal fun getJsonAtPath(jsonPath: JsonPath, jsonString: JsonString): JsonString? =
-        ExternalJsonPath(jsonPath.value).readFromJson<JacksonJsonNode>(jsonString.value)?.toJsonString()
+        ExternalJsonPath(jsonPath.value)
+            .readFromJson<JacksonJsonNode>(jsonString.value)
+            ?.toJsonString()
 
     private fun String.toJsonPath(): Result<com.nfeld.jsonpathkt.JsonPath> = runCatching {
         ExternalJsonPath(this)
     }
 
-    private fun JacksonJsonNode.toJsonString() : JsonString =
-        JsonString(objectMapper.writeValueAsString(this))
+    private fun JacksonJsonNode.toJsonString() : JsonString = JsonString(objectMapper.writeValueAsString(this))
 
     /**
      * Jackson JSON support

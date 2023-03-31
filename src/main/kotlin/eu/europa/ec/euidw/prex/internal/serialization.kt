@@ -157,13 +157,17 @@ internal object ClaimFormatSerializer : KSerializer<ClaimFormat> {
     }
 }
 
+/**
+ * Json ser-de for [JsonPath]
+ */
 internal object JsonPathSerializer : KSerializer<JsonPath> {
     override val descriptor: SerialDescriptor
         get() = PrimitiveSerialDescriptor("JsonPath", PrimitiveKind.STRING)
 
     override fun deserialize(decoder: Decoder): JsonPath {
         val s = decoder.decodeString()
-        return JsonPath.jsonPath(s) ?: throw SerializationException("Not a valid JsonPath expression")
+        return JsonPath.jsonPath(s)
+            ?: throw SerializationException("Not a valid JsonPath expression")
     }
 
     override fun serialize(encoder: Encoder, value: JsonPath) {
