@@ -82,6 +82,8 @@ sealed interface Match {
 /**
  * Checks whether a [presentation definition][PresentationDefinition] can be satisfied by
  * the given list of [Claim]
+ *
+ * @see <a href="https://identity.foundation/presentation-exchange/spec/v2.0.0/#input-evaluation">Input evaluation</a>
  */
 interface PresentationMatcher {
     fun match(pd: PresentationDefinition, claims: List<Claim>): Match

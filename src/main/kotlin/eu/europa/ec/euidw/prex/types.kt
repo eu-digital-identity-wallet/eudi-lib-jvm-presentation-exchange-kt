@@ -209,7 +209,8 @@ data class FieldConstraint(
     val name: Name? = null,
     val purpose: Purpose? = null,
     val filter: Filter? = null,
-    val optional: Boolean = false
+    val optional: Boolean = false,
+    @SerialName("intent_to_retain") val intentToRetain: Boolean? = null
 )
 
 @Serializable(with = ConstraintsSerializer::class)
@@ -389,6 +390,7 @@ data class DescriptorMap(
     @Required val path: JsonPath
 )
 
+// TODO: PresentationSubmission add path_nested
 @Serializable
 data class PresentationSubmission(
     @Required val id: Id,

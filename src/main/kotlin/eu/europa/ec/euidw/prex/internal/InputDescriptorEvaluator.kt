@@ -7,7 +7,9 @@ import eu.europa.ec.euidw.prex.InputDescriptorEvaluation.CandidateClaim
 import eu.europa.ec.euidw.prex.InputDescriptorEvaluation.NotMatchedFieldConstraints
 
 /**
- * Evaluates whether an [InputDescriptor] matches a [Claim]
+ * Evaluates whether an [InputDescriptor] matches a [Claim].
+ *
+ *
  */
 internal class InputDescriptorEvaluator(private val fieldConstraintMatcher: FieldConstraintMatcher) {
 
@@ -48,6 +50,9 @@ internal class InputDescriptorEvaluator(private val fieldConstraintMatcher: Fiel
             ?.contains(claimFormat) ?: true
 
 
+    /**
+     *
+     */
     private fun checkFieldConstraints(
         fieldConstraints: List<FieldConstraint>,
         claimJsonString: JsonString
