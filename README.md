@@ -68,8 +68,6 @@ The holder should be able to verify that a JSON object is a syntactically valid 
 * Adheres to the data model defined in the spec (JSON Schema validation)
 * Contain valid JSONPath expressions
 
-
-
 ### Data Model
 
 ```mermaid
