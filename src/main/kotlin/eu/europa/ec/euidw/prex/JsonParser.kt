@@ -16,7 +16,7 @@ interface JsonParser {
      * It is assumed that the [jsonString] corresponds to an object that either contains
      * a Json object under "presentation_definition" key or is the [PresentationDefinition] itself
      */
-    fun decodePresentationDefinition(jsonString: JsonString): Result<PresentationDefinition>
+    fun decodePresentationDefinition(jsonString: String): Result<PresentationDefinition>
 
     fun PresentationDefinition.encode(): String
 
@@ -36,7 +36,7 @@ interface JsonParser {
      *
      * @see <a href="https://identity.foundation/presentation-exchange/spec/v2.0.0/#embed-locations>embed-locations</a>
      */
-    fun decodePresentationSubmission(jsonString: JsonString): Result<PresentationSubmission>
+    fun decodePresentationSubmission(jsonString: String): Result<PresentationSubmission>
 
     fun PresentationSubmission.encode(): String
 }

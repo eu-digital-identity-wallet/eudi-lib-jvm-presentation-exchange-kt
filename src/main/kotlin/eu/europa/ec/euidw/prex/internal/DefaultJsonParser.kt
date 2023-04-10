@@ -1,7 +1,6 @@
 package eu.europa.ec.euidw.prex.internal
 
 import eu.europa.ec.euidw.prex.JsonParser
-import eu.europa.ec.euidw.prex.JsonString
 import eu.europa.ec.euidw.prex.PresentationDefinition
 import eu.europa.ec.euidw.prex.PresentationSubmission
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -52,8 +51,8 @@ internal class DefaultJsonParser(private val json: Json) : JsonParser {
     override fun decodePresentationDefinition(inputStream: InputStream): Result<PresentationDefinition> =
         json.decodeFromStream<JsonObject>(inputStream).mapToPd()
 
-    override fun decodePresentationDefinition(jsonString: JsonString): Result<PresentationDefinition> =
-        json.parseToJsonElement(jsonString.value).jsonObject.mapToPd()
+    override fun decodePresentationDefinition(jsonString: String): Result<PresentationDefinition> =
+        json.parseToJsonElement(jsonString).jsonObject.mapToPd()
 
     private fun JsonObject.mapToPd(): Result<PresentationDefinition> = runCatching {
         val pdObject = this[presentationDefinitionKey]?.jsonObject ?: this
@@ -66,8 +65,8 @@ internal class DefaultJsonParser(private val json: Json) : JsonParser {
     override fun decodePresentationSubmission(inputStream: InputStream): Result<PresentationSubmission> =
         json.decodeFromStream<JsonObject>(inputStream).mapToPS()
 
-    override fun decodePresentationSubmission(jsonString: JsonString): Result<PresentationSubmission> =
-        this.json.parseToJsonElement(jsonString.value).jsonObject.mapToPS()
+    override fun decodePresentationSubmission(jsonString: String): Result<PresentationSubmission> =
+        this.json.parseToJsonElement(jsonString).jsonObject.mapToPS()
 
     private fun JsonObject.mapToPS(): Result<PresentationSubmission> = runCatching {
         val pdObject = PresentationSubmissionEmbedLocation.values()

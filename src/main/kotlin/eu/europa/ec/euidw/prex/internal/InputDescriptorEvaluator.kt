@@ -32,7 +32,7 @@ internal class InputDescriptorEvaluator(private val fieldConstraintMatcher: Fiel
         presentationDefinitionFormat: Format?,
         inputDescriptor: InputDescriptor,
         claimFormat: ClaimFormat,
-        claimJsonString: JsonString
+        claimJsonString: String
     ): InputDescriptorEvaluation {
         val supportedFormat = isFormatSupported(inputDescriptor, presentationDefinitionFormat, claimFormat)
         return if (!supportedFormat) InputDescriptorEvaluation.UnsupportedFormat
@@ -55,7 +55,7 @@ internal class InputDescriptorEvaluator(private val fieldConstraintMatcher: Fiel
      */
     private fun checkFieldConstraints(
         fieldConstraints: List<FieldConstraint>,
-        claimJsonString: JsonString
+        claimJsonString: String
     ): InputDescriptorEvaluation {
 
         fun FieldConstraint.query() = with(fieldConstraintMatcher) { match(this@query, claimJsonString) }

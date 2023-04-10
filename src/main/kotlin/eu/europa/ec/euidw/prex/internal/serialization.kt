@@ -111,10 +111,10 @@ internal object JwtAlgorithmSerializer : KSerializer<JwtAlgorithm> {
 
     override fun deserialize(decoder: Decoder): JwtAlgorithm {
         val name: String = decoder.decodeString()
-        return name.toJwtAlgorithm() ?: throw SerializationException("Not a valid JwtAlgorithm $name")
+        return JwtAlgorithm.jwtAlgorithm(name) ?: throw SerializationException("Not a valid JwtAlgorithm $name")
     }
 
-    private fun String.toJwtAlgorithm(): JwtAlgorithm? = JwtAlgorithm.jwtAlgorithm(this)
+    
 }
 
 /**

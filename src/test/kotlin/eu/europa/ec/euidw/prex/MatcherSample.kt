@@ -19,7 +19,7 @@ private fun load(f: String): InputStream? =
 
 private fun printResult(match: Match) {
     fun CandidateField.str(): String = when (this) {
-        is Found -> "in path ${path.value} with content ${content.value}}"
+        is Found -> "in path ${path.value} with content $content"
         is OptionalFieldNotFound -> "not present but was optional"
         is PredicateEvaluated -> "in path ${path.value} predicated evaluated to $predicateEvaluation"
     }
@@ -91,7 +91,7 @@ val passport = SimpleClaim(
 
 data class SimpleClaim(override val uniqueId: String, override val format: ClaimFormat, private val value: JsonObject) :
     Claim {
-    override fun asJsonString(): JsonString = JsonString(value.toString())
+    override fun asJsonString(): String = value.toString()
 }
 
 fun main() {

@@ -9,10 +9,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 
 
-@JvmInline
-value class JsonString(val value: String)
-
-
 @Serializable
 @JvmInline
 value class Id(val value: String)
@@ -32,6 +28,7 @@ typealias NonEmptySet<T> = List<T>
 /**
  *  According to JSON Web Algorithms (JWA)
  */
+
 @Serializable(with = JwtAlgorithmSerializer::class)
 sealed interface JwtAlgorithm {
 
@@ -359,7 +356,7 @@ data class PresentationDefinition(
          */
         fun checkInputDescriptorIds() {
             require(inputDescriptors.distinctBy { it.id }.count() == inputDescriptors.size) {
-                "InputDescriptor(s) should have unique ids"
+                "InputDescriptor(s) should have PresentationDefinitionunique ids"
             }
         }
 

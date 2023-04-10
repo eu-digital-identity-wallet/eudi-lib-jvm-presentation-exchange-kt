@@ -29,7 +29,7 @@ sealed interface FieldQueryResult {
          * Indicates that a [FieldConstraint] was satisfied by a claim because (the claim) it
          * contains at [path] an appropriate [content]
          */
-        data class Found(val path: JsonPath, val content: JsonString) : CandidateField
+        data class Found(val path: JsonPath, val content: String) : CandidateField
         data class PredicateEvaluated(val path: JsonPath, val predicateEvaluation: Boolean) : CandidateField
 
         /**
@@ -68,7 +68,7 @@ typealias ClaimId = String
 interface Claim {
     val uniqueId: ClaimId
     val format: ClaimFormat
-    fun asJsonString(): JsonString
+    fun asJsonString(): String
 }
 
 
