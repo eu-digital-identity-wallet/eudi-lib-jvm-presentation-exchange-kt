@@ -35,7 +35,7 @@ The use of this specification is mandatory by OpenID4VP
 ## Usage
 
 ```kotlin
-import niscy.eudiw.prex.*
+import eu.europa.ec.euidw.prex.*
 
 // Decoding a presentation definition json (string)
 val pdJsonStr : String = TODO("provide a presentation definition json")
@@ -44,10 +44,19 @@ val pd = PresentationExchange.parser.decodePresentationDefinition(pdJsonStr).get
 // Check whether a list of candidate claims can satisfy the 
 // presentation definition requirements
 val candidateClaims : List<Claim> = TODO("provide a list of candidate claims")
-val match = PresentationExchange.matcher.match(pd, candidateClaims)
-
-
+val result = PresentationExchange.matcher.match(pd, candidateClaims)
+when(result){
+    is Matched -> println(result.matches)
+    is NotMatched -> println("Not matched")
+}
 ```
+For a concrete example please check [MatcherSample](src/test/kotlin/eu/europa/ec/euidw/prex/MatcherSample.kt)
+
+Also, in the [test folder](src/test/resources/v2.0.0/presentation-definition) there are several
+examples of `PresentationDefintion` JSON objects taken from directly from the
+[specification](https://github.com/decentralized-identity/presentation-exchange/tree/main/test/v2.0.0/presentation-definition)
+
+
 ### Verifier: Produce a valid `PresentationDefinition`
 
 Precondition:
