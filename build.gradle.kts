@@ -1,3 +1,5 @@
+import java.net.URI
+
 plugins {
     kotlin("jvm") version "1.8.20"
     kotlin("plugin.serialization") version "1.8.20"
@@ -43,6 +45,17 @@ publishing {
     publications {
         create<MavenPublication>("library") {
             from(components["java"])
+        }
+    }
+    repositories{
+        maven{
+            name="NiscyEudiwPackages"
+            url= URI("https://maven.pkg.github.com/niscy-eudiw/presentation-exchange-kt")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+
         }
     }
 }
