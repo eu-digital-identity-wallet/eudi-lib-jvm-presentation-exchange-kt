@@ -2,7 +2,7 @@ import java.net.URI
 
 plugins {
     kotlin("jvm") version "1.8.21"
-    kotlin("plugin.serialization") version "1.8.20"
+    kotlin("plugin.serialization") version "1.8.21"
     `java-library`
     `maven-publish`
 }
