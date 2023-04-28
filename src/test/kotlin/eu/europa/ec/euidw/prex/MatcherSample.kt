@@ -95,7 +95,7 @@ data class SimpleClaim(override val uniqueId: String, override val format: Claim
 }
 
 fun main() {
-
+    
     val presentationDefinition = loadPresentationDefinition("v2.0.0/presentation-definition/basic_example.json")
     val claims = listOf(bankAccount, passport)
     PresentationExchange.matcher.match(presentationDefinition, claims).also { printResult(it) }

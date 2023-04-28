@@ -70,12 +70,18 @@ The resulting `PresentationDefinition` should
 * Adhere to the data model defined in the spec (JSON Schema validation)
 * Contain valid JSONPath expressions
 
+In order to create a presentation definition just instantiate the
+[PresentationDefinition](src/main/kotlin/eu/europa/ec/euidw/prex/types.kt) data class
+which enforces the syntactic a conditional rules as defined in the specification.
+
+
 ### Holder: Parse/Validate a `PresentationDefintion`
 
 The holder should be able to verify that a JSON object is a syntactically valid `PresentationDefintion`:
 
 * Adheres to the data model defined in the spec (JSON Schema validation)
 * Contain valid JSONPath expressions
+
 
 ### Data Model
 
