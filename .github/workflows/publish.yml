@@ -1,7 +1,12 @@
 name: Publish package to GitHub Packages
 on:
   push:
-    
+    branches:
+      - main
+      - 'releases/**'
+    branches-ignore:
+      - 'feature/**'
+      - 'features/**'
 jobs:
   publish:
     runs-on: ubuntu-latest
