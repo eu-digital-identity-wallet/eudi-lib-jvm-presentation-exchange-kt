@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.net.URI
 
 plugins {
@@ -9,21 +10,26 @@ plugins {
 
 group = "eu.europa.ec.euidw"
 version = "1.0-SNAPSHOT"
+java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
     mavenCentral()
     mavenLocal()
 }
 
-val kotlinxSerializationVersion = "1.5.0"
-val jsonpathktVersion = "2.0.1"
-
 
 dependencies {
-    api("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion")
-    implementation("com.nfeld.jsonpathkt:jsonpathkt:$jsonpathktVersion")
+    api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
+    implementation("com.nfeld.jsonpathkt:jsonpathkt:2.0.1")
     implementation("net.pwall.json:json-kotlin-schema:0.39")
     testImplementation(kotlin("test"))
+}
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions {
+        freeCompilerArgs = listOf("-Xjsr305=strict")
+        jvmTarget = "17"
+    }
 }
 
 tasks.test {
@@ -37,9 +43,7 @@ tasks.jar {
     }
 }
 
-kotlin {
-    jvmToolchain(11)
-}
+
 
 publishing {
     publications {
