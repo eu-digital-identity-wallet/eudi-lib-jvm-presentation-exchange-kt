@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.net.URI
 
 plugins {
     kotlin("jvm") version "1.8.21"
@@ -25,12 +24,10 @@ dependencies {
     testImplementation(kotlin("test"))
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "17"
-    }
+kotlin {
+    jvmToolchain(17)
 }
+
 
 tasks.test {
     useJUnitPlatform()
@@ -38,8 +35,12 @@ tasks.test {
 
 tasks.jar {
     manifest {
-        attributes(mapOf("Implementation-Title" to project.name,
-            "Implementation-Version" to project.version))
+        attributes(
+            mapOf(
+                "Implementation-Title" to project.name,
+                "Implementation-Version" to project.version
+            )
+        )
     }
 }
 
@@ -51,10 +52,10 @@ publishing {
             from(components["java"])
         }
     }
-    repositories{
-        maven{
-            name="NiscyEudiwPackages"
-            url= URI("https://maven.pkg.github.com/niscy-eudiw/presentation-exchange-kt")
+    repositories {
+        maven {
+            name = "NiscyEudiwPackages"
+            url = uri("https://maven.pkg.github.com/niscy-eudiw/presentation-exchange-kt")
             credentials {
                 username = System.getenv("GITHUB_ACTOR")
                 password = System.getenv("GITHUB_TOKEN")
