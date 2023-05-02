@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     kotlin("jvm") version "1.8.21"
     kotlin("plugin.serialization") version "1.8.21"
@@ -53,6 +51,7 @@ publishing {
         }
     }
     repositories {
+
         maven {
             name = "NiscyEudiwPackages"
             url = uri("https://maven.pkg.github.com/niscy-eudiw/presentation-exchange-kt")
