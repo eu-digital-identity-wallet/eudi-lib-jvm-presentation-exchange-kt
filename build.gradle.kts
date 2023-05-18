@@ -44,25 +44,30 @@ tasks.jar {
 
 
 
+
+
 publishing {
     publications {
         create<MavenPublication>("library") {
             from(components["java"])
         }
     }
-    repositories {
+    val publishMvnRepo = System.getenv("PUBLISH_MVN_REPO")?.let { uri(it) }
+    if (null != publishMvnRepo)
+        repositories {
 
-        maven {
-            name = "NiscyEudiwPackages"
-            url = uri("https://maven.pkg.github.com/niscy-eudiw/presentation-exchange-kt")
-            credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
+            maven {
+                name = "EudiwPackages"
+                url = uri(publishMvnRepo)
+                credentials {
+                    username = System.getenv("GITHUB_ACTOR")
+                    password = System.getenv("GITHUB_TOKEN")
+                }
+
             }
-
-        }
-    }
+    } else println("Warning: PUBLISH_MVN_REPO undefined. Won't publish")
 }
+
 
 
 
