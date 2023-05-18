@@ -16,7 +16,7 @@ repositories {
 
 
 dependencies {
-    api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
+    api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
     implementation("com.nfeld.jsonpathkt:jsonpathkt:2.0.1")
     implementation("net.pwall.json:json-kotlin-schema:0.39")
     testImplementation(kotlin("test"))
