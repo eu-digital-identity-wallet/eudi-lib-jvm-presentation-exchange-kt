@@ -1,19 +1,25 @@
 name: Build project
 on:
-  push:
   pull_request:
+    branches: ['**']
+  push:
+    branches: ['**']
+    tags: [v*]
 jobs:
-  build-gradle-project:
+  build-gradle:
+    # Run on external PRs, but not on internal PRs since those will be run by push to branch
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
     strategy:
       matrix:
         os: [ ubuntu-latest ] # [ ubuntu-latest , macos-latest, windows-latest ]
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Checkout project sources
+      - name: Checkout
         uses: actions/checkout@v3
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v1
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: wrapper
-      - name: Run build with Gradle Wrapper
-        run: ./gradlew build
+          arguments: build
