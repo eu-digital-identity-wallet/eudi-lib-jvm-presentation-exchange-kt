@@ -3,9 +3,8 @@ on:
   push:
     branches:
       - 'main'
-      - 'releases/**'
 jobs:
-  publish:
+  publish-to-github-packages:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -13,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@ccb4328a959376b642e027874838f60f8e596de3
+        uses: gradle/wrapper-validation-action@1
       - name: Publish package
         uses: gradle/gradle-build-action@v2
         with:
