@@ -1,6 +1,7 @@
 name: Build project
 on:
   push:
+  pull_request:
 jobs:
   build-gradle-project:
     strategy:
