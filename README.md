@@ -12,13 +12,13 @@ The use of this specification is mandatory by OpenID4VP
 ## Library functionality
 
 * As a `Verifier` be able to
-    * produce a valid `PresentationDefinition` in order to be communicated to a `Holder` using a protocol like `OpenID4VP`
-    * decide whether  a given `PresentationSubmission` satisfies a specific `PresentationDefinition`
+  * produce a valid `PresentationDefinition` in order to be communicated to a `Holder` using a protocol like `OpenID4VP`
+  * decide whether  a given `PresentationSubmission` satisfies a specific `PresentationDefinition`
 
 * As a `Holder/Wallet` be able to
-    * parse/validate a `PresentationDefition`
-    * to check if a claim stored in the wallet satisfies a `PresentationDefinition`
-    * to produce a `PresentationSubmission` given a valid `PresentationDefintion` and a matching `Claim`
+  * parse/validate a `PresentationDefition`
+  * to check if a claim stored in the wallet satisfies a `PresentationDefinition`
+  * to produce a `PresentationSubmission` given a valid `PresentationDefintion` and a matching `Claim`
 
 ### Presentation Exchange optional features supported
 
@@ -30,7 +30,6 @@ The use of this specification is mandatory by OpenID4VP
 | Credential status constraint | ❌      |
 | JSON-LD framing              | ❌      |
 | Retention                    | ❌      |
-
 
 ## Usage
 
@@ -50,12 +49,12 @@ when(result){
     is NotMatched -> println("Not matched")
 }
 ```
+
 For a concrete example please check [MatcherSample](src/test/kotlin/eu/europa/ec/euidw/prex/MatcherSample.kt)
 
 Also, in the [test folder](src/test/resources/v2.0.0/presentation-definition) there are several
 examples of `PresentationDefintion` JSON objects taken from directly from the
 [specification](https://github.com/decentralized-identity/presentation-exchange/tree/main/test/v2.0.0/presentation-definition)
-
 
 ### Verifier: Produce a valid `PresentationDefinition`
 
@@ -74,14 +73,12 @@ In order to create a presentation definition just instantiate the
 [PresentationDefinition](src/main/kotlin/eu/europa/ec/euidw/prex/types.kt) data class
 which enforces the syntactic a conditional rules as defined in the specification.
 
-
 ### Holder: Parse/Validate a `PresentationDefintion`
 
 The holder should be able to verify that a JSON object is a syntactically valid `PresentationDefintion`:
 
 * Adheres to the data model defined in the spec (JSON Schema validation)
 * Contain valid JSONPath expressions
-
 
 ### Data Model
 
@@ -105,8 +102,7 @@ classDiagram
 * JsonSchema: [Json Kotlin Schema](https://github.com/pwall567/json-kotlin-schema)
 * JsonPath: [JsonPathKt](https://github.com/codeniko/JsonPathKt)
 
-
 ### References
 
 * [Presentation Exchange v2](https://identity.foundation/presentation-exchange/spec/v2.0.0/)
-* [JSON Schema of data model](https://github.com/decentralized-identity/presentation-exchange/tree/main/schemas/v2.0.0)  
+* [JSON Schema of data model](https://github.com/decentralized-identity/presentation-exchange/tree/main/schemas/v2.0.0)
