@@ -1,4 +1,4 @@
-# EUDI - Presentation Exchange (kt)
+# EUDI - Library for Presentation exchange V2.0.0 Specification written in KOTLIN 
 
 ## In a nutshell
 
