@@ -22,6 +22,10 @@ dependencies {
     testImplementation(kotlin("test"))
 }
 
+
+java {
+    withSourcesJar()
+}
 kotlin {
     jvmToolchain(17)
 }
@@ -41,9 +45,6 @@ tasks.jar {
         )
     }
 }
-
-
-
 
 
 publishing {
