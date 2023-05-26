@@ -66,8 +66,8 @@ Precondition:
 Library should offer a factory/builder to produce the `PresentationDefinition`.
 The resulting `PresentationDefinition` should
 
-* Adhere to the data model defined in the spec (JSON Schema validation)
-* Contain valid JSONPath expressions
+* Adhere to the data model defined in the spec (JSON Schema validation).
+* Contain valid JSONPath expressions.
 
 In order to create a presentation definition just instantiate the
 [PresentationDefinition](src/main/kotlin/eu/europa/ec/euidw/prex/types.kt) data class
