@@ -3,7 +3,6 @@ package eu.europa.ec.euidw.prex.internal
 import eu.europa.ec.euidw.prex.Filter
 import net.pwall.json.schema.JSONSchema
 
-
 internal class FilterOps(private val filterSerializer: (Filter) -> String) {
 
     /**
@@ -17,5 +16,4 @@ internal class FilterOps(private val filterSerializer: (Filter) -> String) {
         val jsonSchema = JSONSchema.parse(jsonStr)
         return jsonSchema.validate(j, net.pwall.json.pointer.JSONPointer.root)
     }
-
 }

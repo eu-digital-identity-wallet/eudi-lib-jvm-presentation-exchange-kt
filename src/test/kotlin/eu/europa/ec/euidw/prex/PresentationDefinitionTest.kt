@@ -6,19 +6,15 @@ import kotlin.test.Test
 
 class PresentationDefinitionTest {
 
-
-
     @Test
     fun `format test`() {
         testParseDefinition("v2.0.0/presentation-definition/format_example.json")
     }
 
-
     @Test
     fun `basic example`() {
         testParseDefinition("v2.0.0/presentation-definition/basic_example.json")
     }
-
 
     @Test
     fun `single group example`() {
@@ -41,7 +37,6 @@ class PresentationDefinitionTest {
         }
     }
 
-
     private fun testParseDefinition(f: String): PresentationDefinition =
         PresentationExchange.jsonParser.decodePresentationDefinition(load(f)!!)
             .also { println(it) }
@@ -49,5 +44,4 @@ class PresentationDefinitionTest {
 
     private fun load(f: String): InputStream? =
         PresentationDefinitionTest::class.java.classLoader.getResourceAsStream(f)
-
 }

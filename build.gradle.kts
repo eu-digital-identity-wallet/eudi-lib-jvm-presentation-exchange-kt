@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "1.8.21"
     kotlin("plugin.serialization") version "1.8.21"
+    id("com.diffplug.spotless") version "6.19.0"
     `java-library`
     `maven-publish`
 }
@@ -14,7 +15,6 @@ repositories {
     mavenLocal()
 }
 
-
 dependencies {
     api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
     implementation("com.nfeld.jsonpathkt:jsonpathkt:2.0.1")
@@ -22,14 +22,12 @@ dependencies {
     testImplementation(kotlin("test"))
 }
 
-
 java {
     withSourcesJar()
 }
 kotlin {
     jvmToolchain(17)
 }
-
 
 tasks.test {
     useJUnitPlatform()
@@ -40,12 +38,21 @@ tasks.jar {
         attributes(
             mapOf(
                 "Implementation-Title" to project.name,
-                "Implementation-Version" to project.version
-            )
+                "Implementation-Version" to project.version,
+            ),
         )
     }
 }
 
+val ktlintVersion = "0.49.1"
+spotless {
+    kotlin {
+        ktlint(ktlintVersion)
+    }
+    kotlinGradle {
+        ktlint(ktlintVersion)
+    }
+}
 
 publishing {
     publications {
@@ -54,7 +61,7 @@ publishing {
         }
     }
     val publishMvnRepo = System.getenv("PUBLISH_MVN_REPO")?.let { uri(it) }
-    if (null != publishMvnRepo)
+    if (null != publishMvnRepo) {
         repositories {
 
             maven {
@@ -64,14 +71,9 @@ publishing {
                     username = System.getenv("GITHUB_ACTOR")
                     password = System.getenv("GITHUB_TOKEN")
                 }
-
             }
-    } else println("Warning: PUBLISH_MVN_REPO undefined. Won't publish")
+        }
+    } else {
+        println("Warning: PUBLISH_MVN_REPO undefined. Won't publish")
+    }
 }
-
-
-
-
-
-
-

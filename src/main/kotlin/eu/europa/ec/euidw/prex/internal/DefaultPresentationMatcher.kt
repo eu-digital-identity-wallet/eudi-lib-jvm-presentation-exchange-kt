@@ -1,6 +1,8 @@
 package eu.europa.ec.euidw.prex.internal
 
 import eu.europa.ec.euidw.prex.*
+import eu.europa.ec.euidw.prex.InputDescriptorEvaluation.CandidateClaim
+import eu.europa.ec.euidw.prex.InputDescriptorEvaluation.NotMatchedFieldConstraints
 import eu.europa.ec.euidw.prex.internal.DefaultPresentationMatcher.Evaluator
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -13,7 +15,7 @@ import kotlinx.serialization.json.Json
 private typealias ClaimsEvaluation = Map<ClaimId, Map<InputDescriptorId, InputDescriptorEvaluation>>
 
 internal class DefaultPresentationMatcher(
-    private val inputDescriptorEvaluator: InputDescriptorEvaluator
+    private val inputDescriptorEvaluator: InputDescriptorEvaluator,
 ) : PresentationMatcher {
 
     override fun match(pd: PresentationDefinition, claims: List<Claim>): Match {
@@ -29,7 +31,6 @@ internal class DefaultPresentationMatcher(
         return evaluator.evaluate(pd, candidateClaims, notMatchingClaims)
     }
 
-
     /**
      * An interface that defines a way to decide on the overall presentation definition match
      * given a some candidate and not matching input descriptor evaluations
@@ -37,8 +38,8 @@ internal class DefaultPresentationMatcher(
     private fun interface Evaluator {
         fun evaluate(
             pd: PresentationDefinition,
-            candidateClaims: InputDescriptorEvalPerClaim<InputDescriptorEvaluation.CandidateClaim>,
-            notMatchingClaims: InputDescriptorEvalPerClaim<InputDescriptorEvaluation.NotMatchedFieldConstraints>
+            candidateClaims: InputDescriptorEvalPerClaim<CandidateClaim>,
+            notMatchingClaims: InputDescriptorEvalPerClaim<NotMatchedFieldConstraints>,
         ): Match
     }
 
@@ -53,15 +54,15 @@ internal class DefaultPresentationMatcher(
 
     private fun splitPerDescriptor(
         pd: PresentationDefinition,
-        claimsEvaluation: ClaimsEvaluation
-    ): Pair<InputDescriptorEvalPerClaim<InputDescriptorEvaluation.CandidateClaim>, InputDescriptorEvalPerClaim<InputDescriptorEvaluation.NotMatchedFieldConstraints>> {
+        claimsEvaluation: ClaimsEvaluation,
+    ): Pair<InputDescriptorEvalPerClaim<CandidateClaim>, InputDescriptorEvalPerClaim<NotMatchedFieldConstraints>> {
         val candidateClaimsPerDescriptor =
-            mutableMapOf<InputDescriptorId, Map<ClaimId, InputDescriptorEvaluation.CandidateClaim>>()
+            mutableMapOf<InputDescriptorId, Map<ClaimId, CandidateClaim>>()
         val notMatchingClaimsPerDescriptor =
-            mutableMapOf<InputDescriptorId, Map<ClaimId, InputDescriptorEvaluation.NotMatchedFieldConstraints>>()
+            mutableMapOf<InputDescriptorId, Map<ClaimId, NotMatchedFieldConstraints>>()
 
         fun updateCandidateClaims(i: InputDescriptor) {
-            val candidateClaims = claimsEvaluation.entriesFor<InputDescriptorEvaluation.CandidateClaim>(i.id)
+            val candidateClaims = claimsEvaluation.entriesFor<CandidateClaim>(i.id)
             if (candidateClaims.isNotEmpty()) {
                 candidateClaimsPerDescriptor[i.id] = candidateClaims
             }
@@ -69,7 +70,7 @@ internal class DefaultPresentationMatcher(
 
         fun updateNotMatchingClaims(i: InputDescriptor) {
             val notMatchingClaims =
-                claimsEvaluation.entriesFor<InputDescriptorEvaluation.NotMatchedFieldConstraints>(i.id)
+                claimsEvaluation.entriesFor<NotMatchedFieldConstraints>(i.id)
             if (notMatchingClaims.isNotEmpty()) {
                 notMatchingClaimsPerDescriptor[i.id] = notMatchingClaims
             }
@@ -88,10 +89,10 @@ internal class DefaultPresentationMatcher(
      * In this case, return a [Match.Matched], otherwise a [Match.NotMatched]
      */
     private val allInputDescriptorsRequired = Evaluator { pd, candidateClaims, notMatchingClaims ->
-        if (candidateClaims.size == pd.inputDescriptors.size) Match.Matched(candidateClaims)
-        else Match.NotMatched(notMatchingClaims)
+        if (candidateClaims.size == pd.inputDescriptors.size) {
+            Match.Matched(candidateClaims)
+        } else Match.NotMatched(notMatchingClaims)
     }
-
 
     /**
      * An alternative [Evaluator] that takes into account [PresentationDefinition.submissionRequirements].
@@ -99,7 +100,6 @@ internal class DefaultPresentationMatcher(
      */
     private val matchSubmissionRequirements = Evaluator { pd, candidateClaims, notMatchingClaims ->
         check(null != pd.submissionRequirements)
-
 
         fun inputDescriptorsOf(sr: SubmissionRequirement): List<InputDescriptor> {
             val allGroups = sr.allGroups()
