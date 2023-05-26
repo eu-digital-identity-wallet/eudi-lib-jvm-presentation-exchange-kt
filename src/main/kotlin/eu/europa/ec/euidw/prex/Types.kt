@@ -8,7 +8,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 
-
 @Serializable
 @JvmInline
 value class Id(val value: String)
@@ -21,9 +20,8 @@ value class Name(val value: String)
 @JvmInline
 value class Purpose(val value: String)
 
-
 typealias NonEmptySet<T> = List<T>
-//class NonEmptySet<out T>(head: T, tail: Set<T>) : Set<T> by (setOf(head) + tail)
+// class NonEmptySet<out T>(head: T, tail: Set<T>) : Set<T> by (setOf(head) + tail)
 
 /**
  *  According to JSON Web Algorithms (JWA)
@@ -54,7 +52,6 @@ sealed interface JwtAlgorithm {
         EdDSA
     }
 
-
     companion object {
 
         @JvmStatic
@@ -65,7 +62,6 @@ sealed interface JwtAlgorithm {
         private fun digSigAlgorithm(name: String): DigSig? = DigSig.values().find { it.name == name }
     }
 }
-
 
 /**
  * https://w3c-ccg.github.io/ld-cryptosuite-registry/
@@ -90,7 +86,6 @@ enum class LdpProof {
     Bls12381G2Key2020
 }
 
-
 @Serializable(with = ClaimFormatSerializer::class)
 sealed interface ClaimFormat {
 
@@ -107,10 +102,7 @@ sealed interface ClaimFormat {
         LDP_VC,
         LDP_VP
     }
-
-
 }
-
 
 sealed interface SupportedClaimFormat<CF : ClaimFormat> {
 
@@ -163,7 +155,6 @@ sealed interface SupportedClaimFormat<CF : ClaimFormat> {
             algorithms: Set<JwtAlgorithm>?
         ): MsoMdoc? = if (!algorithms.isNullOrEmpty()) MsoMdoc(algorithms) else null
     }
-
 }
 
 @Serializable(with = FormatSerializer::class)
@@ -267,12 +258,10 @@ sealed interface Constraints {
 @JvmInline
 value class Group(val value: String)
 
-
 sealed interface From {
     data class FromGroup(val group: Group) : From
     data class FromNested(val nested: List<SubmissionRequirement>) : From
 }
-
 
 sealed interface Rule {
     object All : Rule {
@@ -287,7 +276,6 @@ sealed interface Rule {
             min?.let { a -> max?.let { b -> require(a <= b) { "Max must be greater than or equal Min " } } }
         }
     }
-
 }
 
 @Serializable(with = SubmissionRequirementSerializer::class)
@@ -295,7 +283,7 @@ data class SubmissionRequirement(
     val rule: Rule,
     val from: From,
     val name: Name? = null,
-    val purpose: Purpose? = null,
+    val purpose: Purpose? = null
 )
 
 fun SubmissionRequirement.allGroups(): Set<Group> =
@@ -303,7 +291,6 @@ fun SubmissionRequirement.allGroups(): Set<Group> =
         is From.FromGroup -> setOf(from.group)
         is From.FromNested -> from.nested.flatMap { it.allGroups() }.toSet()
     }
-
 
 @Serializable
 @JvmInline
@@ -345,7 +332,9 @@ data class PresentationDefinition(
     val name: Name? = null,
     val purpose: Purpose? = null,
     val format: Format? = null,
-    @Required @SerialName("input_descriptors") val inputDescriptors: List<InputDescriptor>,
+    @Required
+    @SerialName("input_descriptors")
+    val inputDescriptors: List<InputDescriptor>,
     @SerialName("submission_requirements") val submissionRequirements: List<SubmissionRequirement>? = null
 ) {
 
@@ -375,9 +364,7 @@ data class PresentationDefinition(
 
         checkInputDescriptorIds()
         checkInputDescriptorGroups()
-
     }
-
 }
 
 @Serializable
@@ -391,6 +378,10 @@ data class DescriptorMap(
 @Serializable
 data class PresentationSubmission(
     @Required val id: Id,
-    @Required @SerialName("definition_id") val definitionId: Id,
-    @Required @SerialName("descriptor_map") val descriptorMaps: List<DescriptorMap>
+    @Required
+    @SerialName("definition_id")
+    val definitionId: Id,
+    @Required
+    @SerialName("descriptor_map")
+    val descriptorMaps: List<DescriptorMap>
 )

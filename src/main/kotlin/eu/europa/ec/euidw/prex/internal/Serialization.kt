@@ -20,8 +20,12 @@ internal object FormatSerializer : KSerializer<Format> {
      */
     @Serializable
     private data class AlgorithmsOrProofTypes @OptIn(ExperimentalSerializationApi::class) constructor(
-        @EncodeDefault(EncodeDefault.Mode.NEVER) @SerialName("alg") val algorithms: Set<JwtAlgorithm>? = null,
-        @EncodeDefault(EncodeDefault.Mode.NEVER) @SerialName("proof_type") val proofTypes: Set<LdpProof>? = null
+        @EncodeDefault(EncodeDefault.Mode.NEVER)
+        @SerialName("alg")
+        val algorithms: Set<JwtAlgorithm>? = null,
+        @EncodeDefault(EncodeDefault.Mode.NEVER)
+        @SerialName("proof_type")
+        val proofTypes: Set<LdpProof>? = null
     )
 
     /**
@@ -41,7 +45,6 @@ internal object FormatSerializer : KSerializer<Format> {
                 ?: throw SerializationException("Invalid definition of $name. Misses alg or proof_type")
         }.let { Format(it) }
     }
-
 
     override fun serialize(encoder: Encoder, value: Format) {
         val data = value.supportedClaimFormats.associate {
@@ -95,7 +98,6 @@ internal object ConstraintsSerializer : KSerializer<Constraints> {
         val constraintJson = ConstraintsJson(value.fields(), ldStr)
         delegateSerializer.serialize(encoder, constraintJson)
     }
-
 }
 
 /**
@@ -113,8 +115,6 @@ internal object JwtAlgorithmSerializer : KSerializer<JwtAlgorithm> {
         val name: String = decoder.decodeString()
         return JwtAlgorithm.jwtAlgorithm(name) ?: throw SerializationException("Not a valid JwtAlgorithm $name")
     }
-
-    
 }
 
 /**
@@ -153,7 +153,6 @@ internal object ClaimFormatSerializer : KSerializer<ClaimFormat> {
         ClaimFormat.LdpType.LDP_VC -> "ldp_vc"
         ClaimFormat.LdpType.LDP_VP -> "ldp_vp"
         ClaimFormat.MsoMdoc -> "mso_mdoc"
-
     }
 }
 
@@ -173,9 +172,7 @@ internal object JsonPathSerializer : KSerializer<JsonPath> {
     override fun serialize(encoder: Encoder, value: JsonPath) {
         encoder.encodeString(value.value)
     }
-
 }
-
 
 @OptIn(ExperimentalSerializationApi::class)
 internal object SubmissionRequirementSerializer : KSerializer<SubmissionRequirement> {
@@ -201,7 +198,6 @@ internal object SubmissionRequirementSerializer : KSerializer<SubmissionRequirem
         val purpose: Purpose? = null
     )
 
-
     private val delegateSerializer = serializer<JsonSubmissionRequirement>()
     override val descriptor: SerialDescriptor
         get() = SerialDescriptor("SubmissionRequirement", delegateSerializer.descriptor)
@@ -212,10 +208,8 @@ internal object SubmissionRequirementSerializer : KSerializer<SubmissionRequirem
     }
 
     override fun serialize(encoder: Encoder, value: SubmissionRequirement) {
-
         val data = toJson(value)
         encoder.encodeSerializableValue(delegateSerializer, data)
-
     }
 
     private fun fromJson(data: JsonSubmissionRequirement): SubmissionRequirement {
@@ -260,4 +254,3 @@ internal object SubmissionRequirementSerializer : KSerializer<SubmissionRequirem
         )
     }
 }
-
