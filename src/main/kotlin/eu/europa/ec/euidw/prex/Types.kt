@@ -8,7 +8,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 
-
 @Serializable
 @JvmInline
 value class Id(val value: String)
@@ -21,9 +20,8 @@ value class Name(val value: String)
 @JvmInline
 value class Purpose(val value: String)
 
-
 typealias NonEmptySet<T> = List<T>
-//class NonEmptySet<out T>(head: T, tail: Set<T>) : Set<T> by (setOf(head) + tail)
+// class NonEmptySet<out T>(head: T, tail: Set<T>) : Set<T> by (setOf(head) + tail)
 
 /**
  *  According to JSON Web Algorithms (JWA)
@@ -37,7 +35,7 @@ sealed interface JwtAlgorithm {
     enum class Hmac : JwtAlgorithm {
         HS256, // HMAC using SHA-256 (Required)
         HS384, // HMAC using SHA-384
-        HS512 // HMAC using SHA-512
+        HS512, // HMAC using SHA-512
     }
 
     enum class DigSig : JwtAlgorithm {
@@ -51,9 +49,8 @@ sealed interface JwtAlgorithm {
         PS256, // RSASSA-PSS using SHA-256 and MGF1 with SHA-256
         PS384,
         PS512,
-        EdDSA
+        EdDSA,
     }
-
 
     companion object {
 
@@ -65,7 +62,6 @@ sealed interface JwtAlgorithm {
         private fun digSigAlgorithm(name: String): DigSig? = DigSig.values().find { it.name == name }
     }
 }
-
 
 /**
  * https://w3c-ccg.github.io/ld-cryptosuite-registry/
@@ -87,9 +83,8 @@ enum class LdpProof {
     BbsBlsSignature2020,
     BbsBlsSignatureProof2020,
     Bls12381G1Key2020,
-    Bls12381G2Key2020
+    Bls12381G2Key2020,
 }
-
 
 @Serializable(with = ClaimFormatSerializer::class)
 sealed interface ClaimFormat {
@@ -99,18 +94,15 @@ sealed interface ClaimFormat {
     enum class JwtType : ClaimFormat {
         JWT,
         JWT_VC,
-        JWT_VP
+        JWT_VP,
     }
 
     enum class LdpType : ClaimFormat {
         LDP,
         LDP_VC,
-        LDP_VP
+        LDP_VP,
     }
-
-
 }
-
 
 sealed interface SupportedClaimFormat<CF : ClaimFormat> {
 
@@ -118,10 +110,10 @@ sealed interface SupportedClaimFormat<CF : ClaimFormat> {
 
     data class JwtBased(override val type: ClaimFormat.JwtType, val algorithms: Set<JwtAlgorithm>) :
         SupportedClaimFormat<ClaimFormat.JwtType> {
-        init {
-            require(algorithms.isNotEmpty())
+            init {
+                require(algorithms.isNotEmpty())
+            }
         }
-    }
 
     data class MsoMdoc(val algorithms: Set<JwtAlgorithm>) : SupportedClaimFormat<ClaimFormat.MsoMdoc> {
         override val type: ClaimFormat.MsoMdoc
@@ -130,16 +122,16 @@ sealed interface SupportedClaimFormat<CF : ClaimFormat> {
 
     data class LdpBased(override val type: ClaimFormat.LdpType, val proofTypes: Set<LdpProof>) :
         SupportedClaimFormat<ClaimFormat.LdpType> {
-        init {
-            require(proofTypes.isNotEmpty())
+            init {
+                require(proofTypes.isNotEmpty())
+            }
         }
-    }
 
     companion object {
         internal fun supportedClaimFormat(
             type: ClaimFormat,
             algorithms: Set<JwtAlgorithm>? = null,
-            proofTypes: Set<LdpProof>? = null
+            proofTypes: Set<LdpProof>? = null,
         ): SupportedClaimFormat<*>? = when (type) {
             is ClaimFormat.JwtType -> jwt(type, algorithms)
             is ClaimFormat.LdpType -> ldp(type, proofTypes)
@@ -149,21 +141,20 @@ sealed interface SupportedClaimFormat<CF : ClaimFormat> {
         @JvmStatic
         fun ldp(
             type: ClaimFormat.LdpType,
-            proofTypes: Set<LdpProof>?
+            proofTypes: Set<LdpProof>?,
         ) = if (!proofTypes.isNullOrEmpty()) LdpBased(type, proofTypes) else null
 
         @JvmStatic
         fun jwt(
             type: ClaimFormat.JwtType,
-            algorithms: Set<JwtAlgorithm>?
+            algorithms: Set<JwtAlgorithm>?,
         ): JwtBased? = if (!algorithms.isNullOrEmpty()) JwtBased(type, algorithms) else null
 
         @JvmStatic
         fun msoMdoc(
-            algorithms: Set<JwtAlgorithm>?
+            algorithms: Set<JwtAlgorithm>?,
         ): MsoMdoc? = if (!algorithms.isNullOrEmpty()) MsoMdoc(algorithms) else null
     }
-
 }
 
 @Serializable(with = FormatSerializer::class)
@@ -207,7 +198,7 @@ data class FieldConstraint(
     val purpose: Purpose? = null,
     val filter: Filter? = null,
     val optional: Boolean = false,
-    @SerialName("intent_to_retain") val intentToRetain: Boolean? = null
+    @SerialName("intent_to_retain") val intentToRetain: Boolean? = null,
 )
 
 @Serializable(with = ConstraintsSerializer::class)
@@ -241,7 +232,7 @@ sealed interface Constraints {
 
     data class FieldsAndDisclosure(
         val fieldConstraints: NonEmptySet<FieldConstraint>,
-        val limitDisclosure: LimitDisclosure
+        val limitDisclosure: LimitDisclosure,
     ) : Constraints {
         init {
             check(fieldConstraints.isNotEmpty())
@@ -267,12 +258,10 @@ sealed interface Constraints {
 @JvmInline
 value class Group(val value: String)
 
-
 sealed interface From {
     data class FromGroup(val group: Group) : From
     data class FromNested(val nested: List<SubmissionRequirement>) : From
 }
-
 
 sealed interface Rule {
     object All : Rule {
@@ -287,7 +276,6 @@ sealed interface Rule {
             min?.let { a -> max?.let { b -> require(a <= b) { "Max must be greater than or equal Min " } } }
         }
     }
-
 }
 
 @Serializable(with = SubmissionRequirementSerializer::class)
@@ -303,7 +291,6 @@ fun SubmissionRequirement.allGroups(): Set<Group> =
         is From.FromGroup -> setOf(from.group)
         is From.FromNested -> from.nested.flatMap { it.allGroups() }.toSet()
     }
-
 
 @Serializable
 @JvmInline
@@ -321,7 +308,7 @@ data class InputDescriptor(
     val purpose: Purpose? = null,
     val format: Format? = null,
     val constraints: Constraints,
-    @SerialName("group") val groups: List<Group>? = null
+    @SerialName("group") val groups: List<Group>? = null,
 )
 
 /**
@@ -345,8 +332,10 @@ data class PresentationDefinition(
     val name: Name? = null,
     val purpose: Purpose? = null,
     val format: Format? = null,
-    @Required @SerialName("input_descriptors") val inputDescriptors: List<InputDescriptor>,
-    @SerialName("submission_requirements") val submissionRequirements: List<SubmissionRequirement>? = null
+    @Required
+    @SerialName("input_descriptors")
+    val inputDescriptors: List<InputDescriptor>,
+    @SerialName("submission_requirements") val submissionRequirements: List<SubmissionRequirement>? = null,
 ) {
 
     init {
@@ -368,29 +357,34 @@ data class PresentationDefinition(
             val allGroups = submissionRequirements?.flatMap { it.allGroups() }?.toSet() ?: emptySet()
             inputDescriptors.forEach { inputDescriptor ->
                 inputDescriptor.groups?.forEach { grp ->
-                    require(grp in allGroups) { "Input descriptor ${inputDescriptor.id} contains groups ${grp.value} which is not present in submission requirements" }
+                    require(grp in allGroups) {
+                        "Input descriptor ${inputDescriptor.id} " +
+                            "contains groups ${grp.value} which is not present in submission requirements"
+                    }
                 }
             }
         }
 
         checkInputDescriptorIds()
         checkInputDescriptorGroups()
-
     }
-
 }
 
 @Serializable
 data class DescriptorMap(
     @Required val id: InputDescriptorId,
     @Required val format: ClaimFormat,
-    @Required val path: JsonPath
+    @Required val path: JsonPath,
 )
 
 // TODO: PresentationSubmission add path_nested
 @Serializable
 data class PresentationSubmission(
     @Required val id: Id,
-    @Required @SerialName("definition_id") val definitionId: Id,
-    @Required @SerialName("descriptor_map") val descriptorMaps: List<DescriptorMap>
+    @Required
+    @SerialName("definition_id")
+    val definitionId: Id,
+    @Required
+    @SerialName("descriptor_map")
+    val descriptorMaps: List<DescriptorMap>,
 )

@@ -5,4 +5,3 @@ plugins {
 }
 
 rootProject.name = "presentation-exchange-kt"
-

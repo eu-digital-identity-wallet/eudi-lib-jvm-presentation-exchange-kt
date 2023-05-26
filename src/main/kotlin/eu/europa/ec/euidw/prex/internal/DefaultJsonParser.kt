@@ -16,7 +16,6 @@ private const val presentationDefinitionKey = "presentation_definition"
 
 private const val presentationSubmissionKey = "presentation_submission"
 
-
 /**
  * https://identity.foundation/presentation-exchange/spec/v2.0.0/#embed-locations
  */
@@ -25,10 +24,10 @@ private enum class PresentationSubmissionEmbedLocation {
     OIDC,
     DIDComms,
     VP,
-    CHAPI;
+    CHAPI,
+    ;
 
     fun extractFrom(json: JsonObject): JsonObject? {
-
         val root: JsonObject? = when (this) {
             OIDC, VP -> json
             JWT -> json["vp"]?.jsonObject
@@ -36,10 +35,8 @@ private enum class PresentationSubmissionEmbedLocation {
             CHAPI -> json["data"]?.jsonObject
         }
         return root?.get(presentationSubmissionKey)?.jsonObject
-
     }
 }
-
 
 /**
  * An implementation of the [JsonParser] that uses the
@@ -60,7 +57,6 @@ internal class DefaultJsonParser(private val json: Json) : JsonParser {
     }
 
     override fun PresentationDefinition.encode(): String = json.encodeToString(this)
-
 
     override fun decodePresentationSubmission(inputStream: InputStream): Result<PresentationSubmission> =
         json.decodeFromStream<JsonObject>(inputStream).mapToPS()

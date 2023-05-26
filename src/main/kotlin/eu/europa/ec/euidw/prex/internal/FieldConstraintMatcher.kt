@@ -5,7 +5,6 @@ import eu.europa.ec.euidw.prex.FieldQueryResult.CandidateField.Found
 import eu.europa.ec.euidw.prex.FieldQueryResult.CandidateField.OptionalFieldNotFound
 import eu.europa.ec.euidw.prex.FieldQueryResult.RequiredFieldNotFound
 
-
 /**
  * Evaluates whether a claim satisfies a field constraint
  */
@@ -23,7 +22,7 @@ internal class FieldConstraintMatcher(private val filterOps: FilterOps) {
         // tries to locate within the JSON the specified path.
         // If there is a value checks it against the field constraint filter
         fun matchingField(path: JsonPath): String? =
-            JsonPathOps.getJsonAtPath(path, claim)?.let { json->if(matchFilter(json)) json else null }
+            JsonPathOps.getJsonAtPath(path, claim)?.let { json -> if (matchFilter(json)) json else null }
 
         fun notFound() = if (fieldConstraint.optional) OptionalFieldNotFound else RequiredFieldNotFound
 

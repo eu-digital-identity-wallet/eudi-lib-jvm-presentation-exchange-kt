@@ -19,7 +19,7 @@ internal class InputDescriptorEvaluator(private val fieldConstraintMatcher: Fiel
     internal fun matchInputDescriptors(
         presentationDefinitionFormat: Format?,
         inputDescriptors: Iterable<InputDescriptor>,
-        claim: Claim
+        claim: Claim,
     ): Map<InputDescriptorId, InputDescriptorEvaluation> {
         val claimJsonString = claim.asJsonString()
         return inputDescriptors.associate { it.id to evaluate(presentationDefinitionFormat, it, claim.format, claimJsonString) }
@@ -32,32 +32,33 @@ internal class InputDescriptorEvaluator(private val fieldConstraintMatcher: Fiel
         presentationDefinitionFormat: Format?,
         inputDescriptor: InputDescriptor,
         claimFormat: ClaimFormat,
-        claimJsonString: String
+        claimJsonString: String,
     ): InputDescriptorEvaluation {
         val supportedFormat = isFormatSupported(inputDescriptor, presentationDefinitionFormat, claimFormat)
-        return if (!supportedFormat) InputDescriptorEvaluation.UnsupportedFormat
-        else checkFieldConstraints(inputDescriptor.constraints.fields(), claimJsonString)
+        return if (!supportedFormat) {
+            InputDescriptorEvaluation.UnsupportedFormat
+        } else {
+            checkFieldConstraints(inputDescriptor.constraints.fields(), claimJsonString)
+        }
     }
 
     private fun isFormatSupported(
         inputDescriptor: InputDescriptor,
         presentationDefinitionFormat: Format?,
-        claimFormat: ClaimFormat
+        claimFormat: ClaimFormat,
     ): Boolean =
         (inputDescriptor.format ?: presentationDefinitionFormat)
             ?.supportedClaimFormats
             ?.map { it.type }
             ?.contains(claimFormat) ?: true
 
-
     /**
      *
      */
     private fun checkFieldConstraints(
         fieldConstraints: List<FieldConstraint>,
-        claimJsonString: String
+        claimJsonString: String,
     ): InputDescriptorEvaluation {
-
         fun FieldConstraint.query() = with(fieldConstraintMatcher) { match(this@query, claimJsonString) }
 
         val fieldQueryResults: Map<FieldConstraint, FieldQueryResult> =

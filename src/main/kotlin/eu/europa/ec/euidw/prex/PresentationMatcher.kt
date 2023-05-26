@@ -62,7 +62,6 @@ sealed interface InputDescriptorEvaluation {
     object UnsupportedFormat : NotMatchingClaim
 }
 
-
 typealias ClaimId = String
 
 interface Claim {
@@ -70,7 +69,6 @@ interface Claim {
     val format: ClaimFormat
     fun asJsonString(): String
 }
-
 
 typealias InputDescriptorEvalPerClaim<A> = Map<InputDescriptorId, Map<ClaimId, A>>
 

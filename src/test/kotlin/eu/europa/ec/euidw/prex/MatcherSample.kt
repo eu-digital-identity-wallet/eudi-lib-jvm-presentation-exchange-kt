@@ -8,14 +8,11 @@ import kotlinx.serialization.json.put
 import kotlinx.serialization.json.putJsonObject
 import java.io.InputStream
 
-
 private fun loadPresentationDefinition(f: String): PresentationDefinition =
     PresentationExchange.jsonParser.decodePresentationDefinition(load(f)!!).getOrThrow()
 
-
 private fun load(f: String): InputStream? =
     PresentationDefinitionTest::class.java.classLoader.getResourceAsStream(f)
-
 
 private fun printResult(match: Match) {
     fun CandidateField.str(): String = when (this) {
@@ -31,7 +28,6 @@ private fun printResult(match: Match) {
 
             "FieldConstraint no:$index  was matched  ${queryResult.str()}"
         }.joinToString(separator = "\n\t\t\t")
-
     }
 
     fun InputDescriptorId.str() = "Input descriptor: ${this.value}"
@@ -63,7 +59,6 @@ private fun printResult(match: Match) {
     }
 }
 
-
 val bankAccount = SimpleClaim(
     uniqueId = "bankAccountClaim",
     format = ClaimFormat.LdpType.LDP,
@@ -74,7 +69,8 @@ val bankAccount = SimpleClaim(
                 put("id", "https://bank-standards.example.com/fullaccountroute.json")
             }
         }
-    })
+    },
+)
 val passport = SimpleClaim(
     uniqueId = "samplePassport",
     format = ClaimFormat.LdpType.LDP,
@@ -85,17 +81,15 @@ val passport = SimpleClaim(
         putJsonObject("credentialSubject") {
             put("birth_date", "1974-02-11")
         }
-    }
+    },
 )
-
 
 data class SimpleClaim(override val uniqueId: String, override val format: ClaimFormat, private val value: JsonObject) :
     Claim {
-    override fun asJsonString(): String = value.toString()
-}
+        override fun asJsonString(): String = value.toString()
+    }
 
 fun main() {
-    
     val presentationDefinition = loadPresentationDefinition("v2.0.0/presentation-definition/basic_example.json")
     val claims = listOf(bankAccount, passport)
     PresentationExchange.matcher.match(presentationDefinition, claims).also { printResult(it) }

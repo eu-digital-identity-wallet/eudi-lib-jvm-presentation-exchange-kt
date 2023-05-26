@@ -40,4 +40,3 @@ interface JsonParser {
 
     fun PresentationSubmission.encode(): String
 }
-

@@ -19,10 +19,16 @@ internal object FormatSerializer : KSerializer<Format> {
      * Internal class presenting - in Json - a set of [JwtAlgorithm] or a set of [LdpProof]
      */
     @Serializable
-    private data class AlgorithmsOrProofTypes @OptIn(ExperimentalSerializationApi::class) constructor(
-        @EncodeDefault(EncodeDefault.Mode.NEVER) @SerialName("alg") val algorithms: Set<JwtAlgorithm>? = null,
-        @EncodeDefault(EncodeDefault.Mode.NEVER) @SerialName("proof_type") val proofTypes: Set<LdpProof>? = null
-    )
+    private data class AlgorithmsOrProofTypes
+        @OptIn(ExperimentalSerializationApi::class)
+        constructor(
+            @EncodeDefault(EncodeDefault.Mode.NEVER)
+            @SerialName("alg")
+            val algorithms: Set<JwtAlgorithm>? = null,
+            @EncodeDefault(EncodeDefault.Mode.NEVER)
+            @SerialName("proof_type")
+            val proofTypes: Set<LdpProof>? = null,
+        )
 
     /**
      * Json representation of a [Format]. It will be mapped into a map
@@ -41,7 +47,6 @@ internal object FormatSerializer : KSerializer<Format> {
                 ?: throw SerializationException("Invalid definition of $name. Misses alg or proof_type")
         }.let { Format(it) }
     }
-
 
     override fun serialize(encoder: Encoder, value: Format) {
         val data = value.supportedClaimFormats.associate {
@@ -95,7 +100,6 @@ internal object ConstraintsSerializer : KSerializer<Constraints> {
         val constraintJson = ConstraintsJson(value.fields(), ldStr)
         delegateSerializer.serialize(encoder, constraintJson)
     }
-
 }
 
 /**
@@ -113,8 +117,6 @@ internal object JwtAlgorithmSerializer : KSerializer<JwtAlgorithm> {
         val name: String = decoder.decodeString()
         return JwtAlgorithm.jwtAlgorithm(name) ?: throw SerializationException("Not a valid JwtAlgorithm $name")
     }
-
-    
 }
 
 /**
@@ -153,7 +155,6 @@ internal object ClaimFormatSerializer : KSerializer<ClaimFormat> {
         ClaimFormat.LdpType.LDP_VC -> "ldp_vc"
         ClaimFormat.LdpType.LDP_VP -> "ldp_vp"
         ClaimFormat.MsoMdoc -> "mso_mdoc"
-
     }
 }
 
@@ -173,9 +174,7 @@ internal object JsonPathSerializer : KSerializer<JsonPath> {
     override fun serialize(encoder: Encoder, value: JsonPath) {
         encoder.encodeString(value.value)
     }
-
 }
-
 
 @OptIn(ExperimentalSerializationApi::class)
 internal object SubmissionRequirementSerializer : KSerializer<SubmissionRequirement> {
@@ -183,10 +182,10 @@ internal object SubmissionRequirementSerializer : KSerializer<SubmissionRequirem
     @Serializable
     private enum class RuleType {
         @SerialName("all")
-        all,
+        ALL,
 
         @SerialName("pick")
-        pick
+        PICK,
     }
 
     @Serializable
@@ -198,9 +197,8 @@ internal object SubmissionRequirementSerializer : KSerializer<SubmissionRequirem
         val from: Group? = null,
         @SerialName("from_nested") val fromNested: List<JsonSubmissionRequirement>? = null,
         val name: Name? = null,
-        val purpose: Purpose? = null
+        val purpose: Purpose? = null,
     )
-
 
     private val delegateSerializer = serializer<JsonSubmissionRequirement>()
     override val descriptor: SerialDescriptor
@@ -212,10 +210,8 @@ internal object SubmissionRequirementSerializer : KSerializer<SubmissionRequirem
     }
 
     override fun serialize(encoder: Encoder, value: SubmissionRequirement) {
-
         val data = toJson(value)
         encoder.encodeSerializableValue(delegateSerializer, data)
-
     }
 
     private fun fromJson(data: JsonSubmissionRequirement): SubmissionRequirement {
@@ -229,8 +225,8 @@ internal object SubmissionRequirementSerializer : KSerializer<SubmissionRequirem
         }
 
         val rule = when (data.rule) {
-            RuleType.all -> Rule.All
-            RuleType.pick -> Rule.Pick(count = data.count, min = data.min, max = data.max)
+            RuleType.ALL -> Rule.All
+            RuleType.PICK -> Rule.Pick(count = data.count, min = data.min, max = data.max)
         }
         return SubmissionRequirement(rule = rule, from = from, name = data.name, purpose = data.purpose)
     }
@@ -247,8 +243,8 @@ internal object SubmissionRequirementSerializer : KSerializer<SubmissionRequirem
         }
         return JsonSubmissionRequirement(
             rule = when (value.rule) {
-                is Rule.All -> RuleType.all
-                is Rule.Pick -> RuleType.pick
+                is Rule.All -> RuleType.ALL
+                is Rule.Pick -> RuleType.PICK
             },
             count = count,
             min = min,
@@ -256,8 +252,7 @@ internal object SubmissionRequirementSerializer : KSerializer<SubmissionRequirem
             from = from,
             fromNested = fromNested,
             name = value.name,
-            purpose = value.purpose
+            purpose = value.purpose,
         )
     }
 }
-
