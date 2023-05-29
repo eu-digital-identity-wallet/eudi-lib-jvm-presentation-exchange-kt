@@ -1,4 +1,4 @@
-# EUDIW - Library for Presentation exchange
+# EUDI - Presentation Exchange (kt)
 
 ## In a nutshell
 
