@@ -60,12 +60,12 @@ publishing {
         create<MavenPublication>("library") {
             from(components["java"])
             pom {
-                name.set("presentation-exchange")
+                name.set(project.name)
                 description.set("Implementation of Presentation Exchange v2")
                 licenses {
                     license {
                         name.set("The Apache License, Version 2.0")
-                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
                     }
                 }
             }
@@ -80,10 +80,24 @@ publishing {
                 "https://s01.oss.sonatype.org/content/repositories/snapshots/"
             }
 
-        maven {
-            name = "sonatype"
-            url = uri(sonaUri)
-            credentials(PasswordCredentials::class)
+        if ((extra["isReleaseVersion"]) as Boolean) {
+            maven {
+                name = "sonatype"
+                url = uri(sonaUri)
+                credentials(PasswordCredentials::class)
+            }
+        } else {
+            val publishMvnRepo = System.getenv("PUBLISH_MVN_REPO")?.let { uri(it) }
+            if (publishMvnRepo != null) {
+                maven {
+                    name = "EudiwPackages"
+                    url = uri(publishMvnRepo)
+                    credentials {
+                        username = System.getenv("GITHUB_ACTOR")
+                        password = System.getenv("GITHUB_TOKEN")
+                    }
+                }
+            }
         }
     }
 }
