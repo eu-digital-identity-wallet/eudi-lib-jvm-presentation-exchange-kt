@@ -1,4 +1,4 @@
-package eu.europa.ec.euidw.prex
+package eu.europa.ec.eudi.prex
 
 import java.io.InputStream
 

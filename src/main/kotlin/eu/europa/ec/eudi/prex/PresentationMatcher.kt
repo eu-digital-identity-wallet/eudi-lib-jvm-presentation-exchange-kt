@@ -1,9 +1,9 @@
-package eu.europa.ec.euidw.prex
+package eu.europa.ec.eudi.prex
 
-import eu.europa.ec.euidw.prex.FieldQueryResult.CandidateField
-import eu.europa.ec.euidw.prex.FieldQueryResult.CandidateField.Found
-import eu.europa.ec.euidw.prex.InputDescriptorEvaluation.CandidateClaim
-import eu.europa.ec.euidw.prex.InputDescriptorEvaluation.NotMatchedFieldConstraints
+import eu.europa.ec.eudi.prex.FieldQueryResult.CandidateField
+import eu.europa.ec.eudi.prex.FieldQueryResult.CandidateField.Found
+import eu.europa.ec.eudi.prex.InputDescriptorEvaluation.CandidateClaim
+import eu.europa.ec.eudi.prex.InputDescriptorEvaluation.NotMatchedFieldConstraints
 
 /**
  * The outcome of applying a [FieldConstraint] to a claim.

@@ -1,7 +1,7 @@
-package eu.europa.ec.euidw.prex.internal
+package eu.europa.ec.eudi.prex.internal
 
-import eu.europa.ec.euidw.prex.*
-import eu.europa.ec.euidw.prex.Constraints.LimitDisclosure
+import eu.europa.ec.eudi.prex.*
+import eu.europa.ec.eudi.prex.Constraints.LimitDisclosure
 import kotlinx.serialization.*
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor

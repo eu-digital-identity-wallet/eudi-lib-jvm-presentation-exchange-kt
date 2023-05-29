@@ -1,10 +1,10 @@
-package eu.europa.ec.euidw.prex.internal
+package eu.europa.ec.eudi.prex.internal
 
-import eu.europa.ec.euidw.prex.*
-import eu.europa.ec.euidw.prex.FieldQueryResult.CandidateField
-import eu.europa.ec.euidw.prex.FieldQueryResult.RequiredFieldNotFound
-import eu.europa.ec.euidw.prex.InputDescriptorEvaluation.CandidateClaim
-import eu.europa.ec.euidw.prex.InputDescriptorEvaluation.NotMatchedFieldConstraints
+import eu.europa.ec.eudi.prex.*
+import eu.europa.ec.eudi.prex.FieldQueryResult.CandidateField
+import eu.europa.ec.eudi.prex.FieldQueryResult.RequiredFieldNotFound
+import eu.europa.ec.eudi.prex.InputDescriptorEvaluation.CandidateClaim
+import eu.europa.ec.eudi.prex.InputDescriptorEvaluation.NotMatchedFieldConstraints
 
 /**
  * Evaluates whether an [InputDescriptor] matches a [Claim].

@@ -1,6 +1,6 @@
-package eu.europa.ec.euidw.prex.internal
+package eu.europa.ec.eudi.prex.internal
 
-import eu.europa.ec.euidw.prex.Filter
+import eu.europa.ec.eudi.prex.Filter
 import net.pwall.json.schema.JSONSchema
 
 internal class FilterOps(private val filterSerializer: (Filter) -> String) {

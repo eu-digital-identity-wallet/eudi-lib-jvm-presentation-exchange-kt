@@ -1,7 +1,7 @@
-package eu.europa.ec.euidw.prex
+package eu.europa.ec.eudi.prex
 
-import eu.europa.ec.euidw.prex.FieldQueryResult.CandidateField
-import eu.europa.ec.euidw.prex.FieldQueryResult.CandidateField.*
+import eu.europa.ec.eudi.prex.FieldQueryResult.CandidateField
+import eu.europa.ec.eudi.prex.FieldQueryResult.CandidateField.*
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put

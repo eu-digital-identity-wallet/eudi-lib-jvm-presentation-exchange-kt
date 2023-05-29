@@ -1,4 +1,4 @@
-package eu.europa.ec.euidw.prex
+package eu.europa.ec.eudi.prex
 
 import com.fasterxml.jackson.databind.JsonNode as JacksonJsonNode
 import com.fasterxml.jackson.databind.ObjectMapper as JacksonObjectMapper

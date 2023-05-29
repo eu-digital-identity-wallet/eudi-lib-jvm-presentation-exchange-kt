@@ -1,7 +1,7 @@
-package eu.europa.ec.euidw.prex
+package eu.europa.ec.eudi.prex
 
-import eu.europa.ec.euidw.prex.internal.DefaultJsonParser
-import eu.europa.ec.euidw.prex.internal.DefaultPresentationMatcher
+import eu.europa.ec.eudi.prex.internal.DefaultJsonParser
+import eu.europa.ec.eudi.prex.internal.DefaultPresentationMatcher
 import kotlinx.serialization.json.Json
 
 /**
@@ -12,7 +12,6 @@ object PresentationExchange {
     /**
      * Kotlinx JSON serialization
      */
-    // TODO Perhaps the ignoreUnknownKeys needs to be removed
     private val json: Json by lazy { Json { ignoreUnknownKeys = true } }
 
     /**
