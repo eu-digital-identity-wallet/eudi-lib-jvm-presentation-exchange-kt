@@ -1,8 +1,8 @@
-package eu.europa.ec.euidw.prex
+package eu.europa.ec.eudi.prex
 
-import eu.europa.ec.euidw.prex.Constraints.LimitDisclosure.PREFERRED
-import eu.europa.ec.euidw.prex.Constraints.LimitDisclosure.REQUIRED
-import eu.europa.ec.euidw.prex.internal.*
+import eu.europa.ec.eudi.prex.Constraints.LimitDisclosure.PREFERRED
+import eu.europa.ec.eudi.prex.Constraints.LimitDisclosure.REQUIRED
+import eu.europa.ec.eudi.prex.internal.*
 import kotlinx.serialization.Required
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -21,7 +21,6 @@ value class Name(val value: String)
 value class Purpose(val value: String)
 
 typealias NonEmptySet<T> = List<T>
-// class NonEmptySet<out T>(head: T, tail: Set<T>) : Set<T> by (setOf(head) + tail)
 
 /**
  *  According to JSON Web Algorithms (JWA)

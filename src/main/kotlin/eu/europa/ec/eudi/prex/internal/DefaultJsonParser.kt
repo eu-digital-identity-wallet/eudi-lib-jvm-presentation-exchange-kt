@@ -1,8 +1,8 @@
-package eu.europa.ec.euidw.prex.internal
+package eu.europa.ec.eudi.prex.internal
 
-import eu.europa.ec.euidw.prex.JsonParser
-import eu.europa.ec.euidw.prex.PresentationDefinition
-import eu.europa.ec.euidw.prex.PresentationSubmission
+import eu.europa.ec.eudi.prex.JsonParser
+import eu.europa.ec.eudi.prex.PresentationDefinition
+import eu.europa.ec.eudi.prex.PresentationSubmission
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.*

@@ -4,11 +4,14 @@ plugins {
     id("com.diffplug.spotless") version "6.19.0"
     `java-library`
     `maven-publish`
+    signing
 }
 
-group = "eu.europa.ec.euidw"
-version = "1.0-SNAPSHOT"
+group = "eu.europa.ec.eudi"
+version = "0.1.0-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
+
+extra["isReleaseVersion"] = !version.toString().endsWith("SNAPSHOT")
 
 repositories {
     mavenCentral()
@@ -58,22 +61,35 @@ publishing {
     publications {
         create<MavenPublication>("library") {
             from(components["java"])
-        }
-    }
-    val publishMvnRepo = System.getenv("PUBLISH_MVN_REPO")?.let { uri(it) }
-    if (null != publishMvnRepo) {
-        repositories {
-
-            maven {
-                name = "EudiwPackages"
-                url = uri(publishMvnRepo)
-                credentials {
-                    username = System.getenv("GITHUB_ACTOR")
-                    password = System.getenv("GITHUB_TOKEN")
+            pom {
+                name.set("presentation-exchange")
+                description.set("Implementation of Presentation Exchange v2")
+                licenses {
                 }
             }
         }
-    } else {
-        println("Warning: PUBLISH_MVN_REPO undefined. Won't publish")
     }
+    repositories {
+
+        val sonaUri =
+            if ((extra["isReleaseVersion"]) as Boolean) {
+                "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            } else {
+                "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            }
+
+        maven {
+            name = "sonatype"
+            url = uri(sonaUri)
+            credentials(PasswordCredentials::class)
+        }
+    }
+}
+
+signing {
+    val signingKeyId: String? by project
+    val signingKey: String? by project
+    val signingPassword: String? by project
+    useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+    sign(publishing.publications["library"])
 }

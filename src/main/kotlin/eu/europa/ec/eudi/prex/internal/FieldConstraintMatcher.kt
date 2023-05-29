@@ -1,9 +1,12 @@
-package eu.europa.ec.euidw.prex.internal
+package eu.europa.ec.eudi.prex.internal
 
-import eu.europa.ec.euidw.prex.*
-import eu.europa.ec.euidw.prex.FieldQueryResult.CandidateField.Found
-import eu.europa.ec.euidw.prex.FieldQueryResult.CandidateField.OptionalFieldNotFound
-import eu.europa.ec.euidw.prex.FieldQueryResult.RequiredFieldNotFound
+import eu.europa.ec.eudi.prex.FieldConstraint
+import eu.europa.ec.eudi.prex.FieldQueryResult
+import eu.europa.ec.eudi.prex.FieldQueryResult.CandidateField.Found
+import eu.europa.ec.eudi.prex.FieldQueryResult.CandidateField.OptionalFieldNotFound
+import eu.europa.ec.eudi.prex.FieldQueryResult.RequiredFieldNotFound
+import eu.europa.ec.eudi.prex.JsonPath
+import eu.europa.ec.eudi.prex.JsonPathOps
 
 /**
  * Evaluates whether a claim satisfies a field constraint

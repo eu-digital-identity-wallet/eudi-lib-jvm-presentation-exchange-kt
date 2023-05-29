@@ -34,7 +34,7 @@ The use of this specification is mandatory by OpenID4VP
 ## Usage
 
 ```kotlin
-import eu.europa.ec.euidw.prex.*
+import eu.europa.ec.eudi.prex.*
 
 // Decoding a presentation definition json (string)
 val pdJsonStr : String = TODO("provide a presentation definition json")
