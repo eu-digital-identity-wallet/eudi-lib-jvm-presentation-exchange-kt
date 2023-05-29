@@ -7,8 +7,6 @@ plugins {
     signing
 }
 
-group = "eu.europa.ec.eudi"
-version = "0.1.0-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 extra["isReleaseVersion"] = !version.toString().endsWith("SNAPSHOT")
@@ -65,6 +63,9 @@ publishing {
                 name.set("presentation-exchange")
                 description.set("Implementation of Presentation Exchange v2")
                 licenses {
+                }
+                scm {
+
                 }
             }
         }
