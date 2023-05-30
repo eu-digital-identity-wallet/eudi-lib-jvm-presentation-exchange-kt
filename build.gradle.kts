@@ -1,3 +1,13 @@
+import org.gradle.configurationcache.extensions.fileSystemEntryType
+
+object Meta {
+    const val projectDescription = "Implementation of Presentation Exchange v2"
+    const val projectBaseUrl = "https://github.com/eu-digital-identity-wallet/eudi-lib-jvm-presentation-exchange-kt"
+    const val projectGitUrl = "scm:git:git@github.com:eu-digital-identity-wallet/eudi-lib-jvm-presentation-exchange-kt.git"
+    const val projectSshUrl = "scm:git:ssh://github.com:eu-digital-identity-wallet/eudi-lib-jvm-presentation-exchange-kt.git"
+
+}
+
 plugins {
     kotlin("jvm") version "1.8.21"
     kotlin("plugin.serialization") version "1.8.21"
@@ -25,6 +35,7 @@ dependencies {
 
 java {
     withSourcesJar()
+    withJavadocJar()
 }
 kotlin {
     jvmToolchain(17)
@@ -61,12 +72,26 @@ publishing {
             from(components["java"])
             pom {
                 name.set(project.name)
-                description.set("Implementation of Presentation Exchange v2")
+                description.set(Meta.projectDescription)
+                url.set(Meta.projectBaseUrl)
                 licenses {
                     license {
                         name.set("The Apache License, Version 2.0")
                         url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
                     }
+                }
+                scm {
+                    connection.set(Meta.projectGitUrl)
+                    developerConnection.set(Meta.projectSshUrl)
+                    url.set(Meta.projectBaseUrl)
+                }
+                issueManagement {
+                    system.set("github")
+                    url.set(Meta.projectBaseUrl + "/issues")
+                }
+                ciManagement {
+                    system.set("github")
+                    url.set(Meta.projectBaseUrl + "/actions")
                 }
             }
         }
