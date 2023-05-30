@@ -25,6 +25,8 @@ jobs:
         with:
           gradle-version: wrapper
           arguments: build
+        env:
+          CI: true
 
   publish-to-github-packages:
     name: Publish to Github Packages
@@ -51,6 +53,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PUBLISH_MVN_REPO: https://maven.pkg.github.com/${{ github.repository }}
+          CI: true
 
   publish-to-sonatype:
     name: Publish to sonatype.org
