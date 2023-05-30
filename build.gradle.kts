@@ -1,11 +1,8 @@
-import org.gradle.configurationcache.extensions.fileSystemEntryType
-
 object Meta {
     const val projectDescription = "Implementation of Presentation Exchange v2"
     const val projectBaseUrl = "https://github.com/eu-digital-identity-wallet/eudi-lib-jvm-presentation-exchange-kt"
     const val projectGitUrl = "scm:git:git@github.com:eu-digital-identity-wallet/eudi-lib-jvm-presentation-exchange-kt.git"
     const val projectSshUrl = "scm:git:ssh://github.com:eu-digital-identity-wallet/eudi-lib-jvm-presentation-exchange-kt.git"
-
 }
 
 plugins {
