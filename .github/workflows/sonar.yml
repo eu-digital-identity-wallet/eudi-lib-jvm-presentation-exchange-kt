@@ -11,7 +11,7 @@ jobs:
     env:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     # Run on external PRs, but not on internal PRs since those will be run by push to branch
-    if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) && ${{ SONAR_TOKEN != ''}}
+    if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) && ${{ SONAR_TOKEN }} != ""
     runs-on:  ubuntu-latest
     steps:
       - name: Checkout project sources
