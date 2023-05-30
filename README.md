@@ -1,14 +1,12 @@
-# EUDI - Library for Presentation exchange V2.0.0 Specification written in KOTLIN 
+# eudi-lib-jvm-presentation-exchange-kt
 
-## In a nutshell
-
-The Presentation Exchange KT Library implements the functionality as described in 
+The `eudi-lib-jvm-presentation-exchange-kt` is a kotlin library that implements the functionality as described in 
 [Presentation Exchange v2](https://identity.foundation/presentation-exchange/spec/v2.0.0/) specification for version 2.
 
 The Presentation Exchange V2 is a specification that defines:
 
 * A way for the `Verifier` to describe proof requirements in terms of `PresentationDefintion` object
-* A way for the `Holder` to describe submissions of proofs that allign with those requirements in terms of a `PresentationSubmission`
+* A way for the `Holder` to describe submissions of proofs that align with those requirements in terms of a `PresentationSubmission`
 
 The use of this specification is mandatory by OpenID4VP
 
@@ -24,6 +22,10 @@ The use of this specification is mandatory by OpenID4VP
   * to produce a `PresentationSubmission` given a valid `PresentationDefintion` and a matching `Claim`
 
 ### Presentation Exchange optional features supported
+
+The table bellow describes a set of option features defined by [Presentation Exchange v2](https://identity.foundation/presentation-exchange/spec/v2.0.0/)
+which are supported by the library.
+Currently, no optional features are being supported.
 
 | Feature                      | Status |
 |------------------------------|--------|
@@ -108,4 +110,4 @@ classDiagram
 ### References
 
 * [Presentation Exchange v2](https://identity.foundation/presentation-exchange/spec/v2.0.0/)
-* [JSON Schema of data model](https://github.com/decentralized-identity/presentation-exchange/tree/main/schemas/v2.0.0)
+* [JSON Schema of data model](https://github.com/decentralized-identity/presentation-exchange/tree/main/schemas/v2.0.0) 
