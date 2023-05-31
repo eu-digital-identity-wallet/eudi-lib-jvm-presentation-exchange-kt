@@ -98,32 +98,13 @@ internal class DefaultPresentationMatcher(
      * An alternative [Evaluator] that takes into account [PresentationDefinition.submissionRequirements].
      * It can  be used only if presentation definition contains such requirements
      */
-    private val matchSubmissionRequirements = Evaluator { pd, candidateClaims, notMatchingClaims ->
+    private val matchSubmissionRequirements = Evaluator { pd, _, _ ->
         check(null != pd.submissionRequirements)
-
-        fun inputDescriptorsOf(sr: SubmissionRequirement): List<InputDescriptor> {
-            val allGroups = sr.allGroups()
-            return pd.inputDescriptors
-                .filter { inputDescriptor -> inputDescriptor.groups?.all { it in allGroups } ?: false }
-        }
-
-        fun match(sr: SubmissionRequirement): Boolean {
-            val inputDescriptors = inputDescriptorsOf(sr)
-            return when (val from = sr.from) {
-                is From.FromGroup -> when (sr.rule) {
-                    is Rule.All -> TODO()
-                    is Rule.Pick -> TODO()
-                }
-
-                is From.FromNested -> from.nested.all { match(it) }
-            }
-        }
-
-        TODO()
+        error("Not yet implemented")
     }
 
     private inline fun <reified E> ClaimsEvaluation.entriesFor(inputDescriptorId: InputDescriptorId): Map<ClaimId, E> =
-        mapValues { it.value[inputDescriptorId]!! }
+        mapValues { it.value[inputDescriptorId] }
             .filterValues { it is E }
             .mapValues { it.value as E }
 
