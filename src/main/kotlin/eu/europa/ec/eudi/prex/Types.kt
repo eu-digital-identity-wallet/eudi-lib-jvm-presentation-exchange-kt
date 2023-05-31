@@ -176,7 +176,6 @@ value class JsonPath private constructor(val value: String) {
     }
 }
 
-// TODO Currently we don't check that Filter is a valid JSON Schema
 /**
  * A filter is a [JsonObject] which is expected to contain a
  * JSON Schema definition
@@ -376,7 +375,6 @@ data class DescriptorMap(
     @Required val path: JsonPath,
 )
 
-// TODO: PresentationSubmission add path_nested
 @Serializable
 data class PresentationSubmission(
     @Required val id: Id,

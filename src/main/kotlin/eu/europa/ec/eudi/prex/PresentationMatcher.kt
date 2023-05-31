@@ -83,6 +83,6 @@ sealed interface Match {
  *
  * @see <a href="https://identity.foundation/presentation-exchange/spec/v2.0.0/#input-evaluation">Input evaluation</a>
  */
-interface PresentationMatcher {
+fun interface PresentationMatcher {
     fun match(pd: PresentationDefinition, claims: List<Claim>): Match
 }
