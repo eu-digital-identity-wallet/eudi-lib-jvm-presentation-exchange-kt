@@ -99,7 +99,7 @@ internal class DefaultPresentationMatcher(
      * It can  be used only if presentation definition contains such requirements
      */
     private val matchSubmissionRequirements = Evaluator { pd, _, _ ->
-        check(null != pd.submissionRequirements)
+        checkNotNull(pd.submissionRequirements)
         error("Not yet implemented")
     }
 

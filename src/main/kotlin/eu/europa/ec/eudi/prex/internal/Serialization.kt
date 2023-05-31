@@ -221,7 +221,7 @@ internal object SubmissionRequirementSerializer : KSerializer<SubmissionRequirem
 
             data.from != null -> From.FromGroup(data.from)
             data.fromNested != null -> From.FromNested(data.fromNested.map { fromJson(it) })
-            else -> throw IllegalStateException("Something wrong")
+            else -> error("Something wrong")
         }
 
         val rule = when (data.rule) {
