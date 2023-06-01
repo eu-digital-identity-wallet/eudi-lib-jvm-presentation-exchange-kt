@@ -1,14 +1,44 @@
-# eudi-lib-jvm-presentation-exchange-kt
+# EUDI Presentation Exchange v2 library
+
+## Table of contents
+
+* [Overview](#overview)
+* [Disclaimer](#disclaimer)
+* [Library Functionality](#library-functionality)
+  * [Presentation Exchange optional features supported](#presentation-exchange-optional-features-supported)
+* [How to Use](#how-to-use)
+  * [Verifier: Produce a valid PresentationDefinition](#verifier-produce-a-valid-presentationdefinition)
+  * [Holder: Parse/Validate a PresentationDefintion](#holder-parsevalidate-a-presentationdefinition)
+  * [Holder: Match a PresentationDefinition](#holder-match-a-presentationdefinition)
+* [Presentation Definition Data Model](#presentation-definition-data-model)
+* [How to contribute](#how-to-contribute)
+* [License](#license)
+
+ 
+## Overview
 
 The `eudi-lib-jvm-presentation-exchange-kt` is a kotlin library that implements the functionality as described in 
-[Presentation Exchange v2](https://identity.foundation/presentation-exchange/spec/v2.0.0/) specification for version 2.
+[Presentation Exchange v2](https://identity.foundation/presentation-exchange/spec/v2.0.0/).
 
-The Presentation Exchange V2 is a specification that defines:
+This is a specification that defines:
 
 * A way for the `Verifier` to describe proof requirements in terms of `PresentationDefintion` object
 * A way for the `Holder` to describe submissions of proofs that align with those requirements in terms of a `PresentationSubmission`
 
 The use of this specification is mandatory by OpenID4VP
+
+## Disclaimer
+
+- The pre-release has reduced security, privacy, availability, and reliability standards relative to
+  future releases. This could make the software slower, less reliable, or more vulnerable to attacks
+  than mature software.
+- The pre-release is not yet comprehensively documented.
+- The pre-release may contain errors or design flaws and other problems that could cause system or
+  other failures and data loss.
+- The pre-release is an early endeavor reflecting the efforts of a short time-boxed period, and by no
+  means can be considered as the final product.
+- The pre-release may be changed substantially over time, might introduce new features but also may
+  change or remove existing ones, potentially breaking compatibility with your existing code.
 
 ## Library functionality
 
@@ -23,7 +53,7 @@ The use of this specification is mandatory by OpenID4VP
 
 ### Presentation Exchange optional features supported
 
-The table bellow describes a set of option features defined by [Presentation Exchange v2](https://identity.foundation/presentation-exchange/spec/v2.0.0/)
+The table bellow summarizes the set of optional features defined by [Presentation Exchange v2](https://identity.foundation/presentation-exchange/spec/v2.0.0/)
 which are supported by the library.
 Currently, no optional features are being supported.
 
@@ -36,7 +66,45 @@ Currently, no optional features are being supported.
 | JSON-LD framing              | ❌      |
 | Retention                    | ❌      |
 
-## Usage
+## How to Use
+
+
+
+
+### Verifier: Produce a valid `PresentationDefinition`
+
+Precondition:
+
+* Verifier should know the data model of the claim(s)  that wants to be presented by the holder
+* Verifier should be able to describe which formats (jwt, jwt_vc, ldp_vc etc.) and which algorithms is able to process
+
+Library should offer a factory/builder to produce the `PresentationDefinition`.
+The resulting `PresentationDefinition` should
+
+* Adhere to the data model defined in the spec (JSON Schema validation).
+* Contain valid JSONPath expressions.
+
+In order to create a presentation definition just instantiate the
+[PresentationDefinition](src/main/kotlin/eu/europa/ec/eudi/prex/Types.kt) data class
+which enforces the syntactic a conditional rules as defined in the specification.
+
+### Holder: Parse/Validate a PresentationDefinition
+
+The holder should be able to verify that a JSON object is a syntactically valid `PresentationDefintion`:
+
+* Adheres to the data model defined in the spec (JSON Schema validation)
+* Contain valid JSONPath expressions
+
+```kotlin
+import eu.europa.ec.eudi.prex.*
+
+// Decoding a presentation definition json (string)
+val pdJsonStr : String = TODO("provide a presentation definition json")
+val pd = PresentationExchange.parser.decodePresentationDefinition(pdJsonStr).getOrThrow()
+
+```
+
+### Holder: Match a PresentationDefinition
 
 ```kotlin
 import eu.europa.ec.eudi.prex.*
@@ -55,37 +123,9 @@ when(result){
 }
 ```
 
-For a concrete example please check [MatcherSample](src/test/kotlin/eu/europa/ec/euidw/prex/MatcherSample.kt)
+For a concrete example please check [MatcherSample](src/test/kotlin/eu/europa/ec/eudi/prex/MatcherSample.kt)
 
-Also, in the [test folder](src/test/resources/v2.0.0/presentation-definition) there are several
-examples of `PresentationDefintion` JSON objects taken from directly from the
-[specification](https://github.com/decentralized-identity/presentation-exchange/tree/main/test/v2.0.0/presentation-definition)
-
-### Verifier: Produce a valid `PresentationDefinition`
-
-Precondition:
-
-* Verifier should know the data model of the claim(s)  that wants to be presented by the holder
-* Verifier should be able to describe which formats (jwt, jwt_vc, ldp_vc etc.) and which algorithms is able to process
-
-Library should offer a factory/builder to produce the `PresentationDefinition`.
-The resulting `PresentationDefinition` should
-
-* Adhere to the data model defined in the spec (JSON Schema validation).
-* Contain valid JSONPath expressions.
-
-In order to create a presentation definition just instantiate the
-[PresentationDefinition](src/main/kotlin/eu/europa/ec/euidw/prex/types.kt) data class
-which enforces the syntactic a conditional rules as defined in the specification.
-
-### Holder: Parse/Validate a `PresentationDefintion`
-
-The holder should be able to verify that a JSON object is a syntactically valid `PresentationDefintion`:
-
-* Adheres to the data model defined in the spec (JSON Schema validation)
-* Contain valid JSONPath expressions
-
-### Data Model
+## Presentation Definition Data Model
 
 ```mermaid
 classDiagram
@@ -101,13 +141,38 @@ classDiagram
     note for InputDescriptor "Constraints for a single claim"
 ```
 
-### Dependencies (to other libs)
+
+
+### References
+
+* [Presentation Exchange v2](https://identity.foundation/presentation-exchange/spec/v2.0.0/)
+* [JSON Schema of data model](https://github.com/decentralized-identity/presentation-exchange/tree/main/schemas/v2.0.0)
+
+## How to contribute
+
+We welcome contributions to this project. To ensure that the process is smooth for everyone
+involved, follow the guidelines found in [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+
+### Third-party component
 
 * Json : [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization)
 * JsonSchema: [Json Kotlin Schema](https://github.com/pwall567/json-kotlin-schema)
 * JsonPath: [JsonPathKt](https://github.com/codeniko/JsonPathKt)
 
-### References
+### License details
 
-* [Presentation Exchange v2](https://identity.foundation/presentation-exchange/spec/v2.0.0/)
-* [JSON Schema of data model](https://github.com/decentralized-identity/presentation-exchange/tree/main/schemas/v2.0.0) 
+Copyright (c) 2023 European Commission
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
