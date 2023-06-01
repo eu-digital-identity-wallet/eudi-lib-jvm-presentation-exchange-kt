@@ -32,7 +32,7 @@ jobs:
     name: Publish to sonatype.org (SNAPSHOT)
     needs: [ build-gradle ]
     # Runs only in main
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -62,7 +62,7 @@ jobs:
   publish-to-sonatype:
     name: Publish to sonatype.org
     needs: [ build-gradle ]
-    if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v'))
+    if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v')) && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     permissions:
       contents: read
