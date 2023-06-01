@@ -32,7 +32,7 @@ jobs:
     name: Publish to sonatype.org (SNAPSHOT)
     needs: [ build-gradle ]
     # Runs only in main
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' &&  github.repository == 'eu-digital-identity-wallet/eudi-lib-jvm-presentation-exchange-kt'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' &&  github.repository_owner == 'eu-digital-identity-wallet'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -62,7 +62,7 @@ jobs:
   publish-to-sonatype:
     name: Publish to sonatype.org
     needs: [ build-gradle ]
-    if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v')) && ${{ github.repository == 'eu-digital-identity-wallet/eudi-lib-jvm-presentation-exchange-kt' }}
+    if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v'))  &&  github.repository_owner == 'eu-digital-identity-wallet'
     runs-on: ubuntu-latest
     permissions:
       contents: read
