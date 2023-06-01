@@ -1,8 +1,10 @@
 object Meta {
     const val projectDescription = "Implementation of Presentation Exchange v2"
     const val projectBaseUrl = "https://github.com/eu-digital-identity-wallet/eudi-lib-jvm-presentation-exchange-kt"
-    const val projectGitUrl = "scm:git:git@github.com:eu-digital-identity-wallet/eudi-lib-jvm-presentation-exchange-kt.git"
-    const val projectSshUrl = "scm:git:ssh://github.com:eu-digital-identity-wallet/eudi-lib-jvm-presentation-exchange-kt.git"
+    const val projectGitUrl =
+        "scm:git:git@github.com:eu-digital-identity-wallet/eudi-lib-jvm-presentation-exchange-kt.git"
+    const val projectSshUrl =
+        "scm:git:ssh://github.com:eu-digital-identity-wallet/eudi-lib-jvm-presentation-exchange-kt.git"
 }
 
 plugins {
@@ -104,24 +106,10 @@ publishing {
                 "https://s01.oss.sonatype.org/content/repositories/snapshots/"
             }
 
-        if ((extra["isReleaseVersion"]) as Boolean) {
-            maven {
-                name = "sonatype"
-                url = uri(sonaUri)
-                credentials(PasswordCredentials::class)
-            }
-        } else {
-            val publishMvnRepo = System.getenv("PUBLISH_MVN_REPO")?.let { uri(it) }
-            if (publishMvnRepo != null) {
-                maven {
-                    name = "EudiwPackages"
-                    url = uri(publishMvnRepo)
-                    credentials {
-                        username = System.getenv("GITHUB_ACTOR")
-                        password = System.getenv("GITHUB_TOKEN")
-                    }
-                }
-            }
+        maven {
+            name = "sonatype"
+            url = uri(sonaUri)
+            credentials(PasswordCredentials::class)
         }
     }
 }
