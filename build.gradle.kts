@@ -1,4 +1,5 @@
 object Meta {
+    const val orgUrl = "https://github.com/eu-digital-identity-wallet"
     const val projectDescription = "Implementation of Presentation Exchange v2"
     const val projectBaseUrl = "https://github.com/eu-digital-identity-wallet/eudi-lib-jvm-presentation-exchange-kt"
     const val projectGitUrl =
@@ -60,7 +61,7 @@ val ktlintVersion = "0.49.1"
 spotless {
     kotlin {
         ktlint(ktlintVersion)
-        licenseHeaderFile("LICENSE-HEADER.txt")
+        licenseHeaderFile("FileHeader.txt")
     }
     kotlinGradle {
         ktlint(ktlintVersion)
@@ -93,6 +94,11 @@ publishing {
                 ciManagement {
                     system.set("github")
                     url.set(Meta.projectBaseUrl + "/actions")
+                }
+                developers {
+                    organization {
+                        url.set(Meta.orgUrl)
+                    }
                 }
             }
         }
