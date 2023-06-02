@@ -29,7 +29,8 @@ This is a specification that defines:
 
 The use of this specification is mandatory by OpenID4VP
 
-# Disclaimer
+## Disclaimer
+
 The released software is a initial development release version: 
 -  The initial development release is an early endeavor reflecting the efforts of a short timeboxed period, and by no means can be considered as the final product.  
 -  The initial development release may be changed substantially over time, might introduce new features but also may change or remove existing ones, potentially breaking compatibility with your existing code.
