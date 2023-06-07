@@ -57,7 +57,7 @@ The released software is a initial development release version:
 
 The table bellow summarizes the set of optional features defined by [Presentation Exchange v2](https://identity.foundation/presentation-exchange/spec/v2.0.0/)
 which are supported by the library.
-Currently, no optional features are being supported.
+Currently, no optional features are being supported, except [retention](https://identity.foundation/presentation-exchange/spec/v2.0.0/#retention-feature)
 
 | Feature                      | Status |
 |------------------------------|--------|
@@ -66,7 +66,7 @@ Currently, no optional features are being supported.
 | Relational constraint        | ❌      |
 | Credential status constraint | ❌      |
 | JSON-LD framing              | ❌      |
-| Retention                    | ❌      |
+| Retention                    | ✅      |
 
 ## How to Use
 
