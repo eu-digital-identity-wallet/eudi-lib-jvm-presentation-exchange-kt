@@ -155,6 +155,8 @@ internal object ClaimFormatSerializer : KSerializer<ClaimFormat> {
         "jwt" -> ClaimFormat.JwtType.JWT
         "jwt_vc" -> ClaimFormat.JwtType.JWT_VC
         "jwt_vp" -> ClaimFormat.JwtType.JWT_VP
+        "sd_jwt" -> ClaimFormat.JwtType.SD_JWT
+        "hb_jwt" -> ClaimFormat.JwtType.HB_JWT
         "ldp" -> ClaimFormat.LdpType.LDP
         "ldp_vc" -> ClaimFormat.LdpType.LDP_VC
         "ldp_vp" -> ClaimFormat.LdpType.LDP_VP
@@ -166,6 +168,8 @@ internal object ClaimFormatSerializer : KSerializer<ClaimFormat> {
         ClaimFormat.JwtType.JWT -> "jwt"
         ClaimFormat.JwtType.JWT_VC -> "jwt_vc"
         ClaimFormat.JwtType.JWT_VP -> "jwt_vp"
+        ClaimFormat.JwtType.SD_JWT -> "sd_jwt"
+        ClaimFormat.JwtType.HB_JWT -> "hb_jwt"
         ClaimFormat.LdpType.LDP -> "ldp"
         ClaimFormat.LdpType.LDP_VC -> "ldp_vc"
         ClaimFormat.LdpType.LDP_VP -> "ldp_vp"

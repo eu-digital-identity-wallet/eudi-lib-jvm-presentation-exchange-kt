@@ -109,6 +109,8 @@ sealed interface ClaimFormat {
         JWT,
         JWT_VC,
         JWT_VP,
+        SD_JWT,
+        HB_JWT,
     }
 
     enum class LdpType : ClaimFormat {

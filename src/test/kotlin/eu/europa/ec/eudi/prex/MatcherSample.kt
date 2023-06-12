@@ -104,8 +104,31 @@ data class SimpleClaim(override val uniqueId: String, override val format: Claim
         override fun asJsonString(): String = value.toString()
     }
 
-fun main() {
+fun basicExample() {
     val presentationDefinition = loadPresentationDefinition("v2.0.0/presentation-definition/basic_example.json")
     val claims = listOf(bankAccount, passport)
     PresentationExchange.matcher.match(presentationDefinition, claims).also { printResult(it) }
+}
+
+val fiId = SimpleClaim(
+    uniqueId = "samplePassport",
+    format = ClaimFormat.JwtType.SD_JWT,
+    value = buildJsonObject {
+        put("iss", "fi.dvv.digiid")
+        putJsonObject("credentialSubject") {
+            put("nationality", "GR")
+            put("gender", 0)
+        }
+    },
+)
+
+fun fiExample() {
+    val presentationDefinition = loadPresentationDefinition("v2.0.0/presentation-definition/fi.json")
+    val claims = listOf(fiId)
+    PresentationExchange.matcher.match(presentationDefinition, claims).also { printResult(it) }
+}
+
+fun main() {
+    basicExample()
+    fiExample()
 }

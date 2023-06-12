@@ -1,0 +1,69 @@
+{
+  "id": "",
+  "format": {
+    "sd_jwt": {
+      "alg": [
+        "ES384"
+      ]
+    },
+    "hb_jwt": {
+      "alg": [
+        "ES256"
+      ]
+    }
+  },
+  "input_descriptors": [
+    {
+      "id": "nationality",
+      "constraints": {
+        "fields": [
+          {
+            "path": [
+              "$.iss"
+            ],
+            "filter": {
+              "const": "fi.dvv.digiid"
+            }
+          },
+          {
+            "path": [
+              "$.credentialSubject.nationality"
+            ],
+            "filter": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "gender",
+      "constraints": {
+        "fields": [
+          {
+            "path": [
+              "$.iss"
+            ],
+            "filter": {
+              "const": "fi.dvv.digiid"
+            }
+          },
+          {
+            "path": [
+              "$.credentialSubject.gender"
+            ],
+            "filter": {
+              "type": "integer",
+              "enum": [
+                0,
+                1,
+                2,
+                9
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
