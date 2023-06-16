@@ -97,7 +97,10 @@ internal object ConstraintsSerializer : KSerializer<Constraints> {
      * Helper class to represents [Constraints] in Json
      */
     @Serializable
-    private data class ConstraintsJson(val fields: List<FieldConstraint>? = null, val limitDisclosure: String? = null)
+    private data class ConstraintsJson(
+        val fields: List<FieldConstraint>? = null,
+        @SerialName("limit_disclosure") val limitDisclosure: String? = null,
+    )
 
     private val delegateSerializer = serializer<ConstraintsJson>()
     override val descriptor: SerialDescriptor = SerialDescriptor("Constraints", delegateSerializer.descriptor)
