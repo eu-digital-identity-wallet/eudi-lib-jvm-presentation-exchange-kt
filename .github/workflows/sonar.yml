@@ -1,7 +1,7 @@
 name: SonarCloud
 on:
   push:
-    branches: [ 'main', 'feature/sonar*' ]
+    branches: [ 'main', 'feature/*' ]
     tags: [ v* ]
 
 
