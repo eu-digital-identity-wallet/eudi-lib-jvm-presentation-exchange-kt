@@ -14,8 +14,6 @@ jobs:
     steps:
       - name: Checkout project sources
         uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.inputs.tag }}
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
