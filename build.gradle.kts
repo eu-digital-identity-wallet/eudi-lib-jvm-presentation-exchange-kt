@@ -57,7 +57,7 @@ tasks.jar {
     }
 }
 
-val ktlintVersion = "0.49.1"
+val ktlintVersion = "0.50.0"
 spotless {
     kotlin {
         ktlint(ktlintVersion)
