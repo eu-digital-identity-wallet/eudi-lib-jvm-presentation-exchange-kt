@@ -103,10 +103,10 @@ internal class DefaultPresentationMatcher(
      * there is at least a [claim][Claim] that satisfies it.
      * In this case, return a [Match.Matched], otherwise a [Match.NotMatched]
      */
+    @Suppress("ktlint")
     private val allInputDescriptorsRequired = Evaluator { pd, candidateClaims, notMatchingClaims ->
-        if (candidateClaims.size == pd.inputDescriptors.size) {
-            Match.Matched(candidateClaims)
-        } else Match.NotMatched(notMatchingClaims)
+        if (candidateClaims.size == pd.inputDescriptors.size) Match.Matched(candidateClaims)
+        else Match.NotMatched(notMatchingClaims)
     }
 
     /**
