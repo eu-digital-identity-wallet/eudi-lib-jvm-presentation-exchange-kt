@@ -30,8 +30,8 @@ internal object JsonPathOps {
     internal fun isValid(path: String): Boolean = path.toJsonPath().isSuccess
 
     /**
-     * Extracts from the given [JSON][jsonString] the content
-     * at [path][jsonPath]. Returns the [JsonString] found at the path, if found
+     * Extracts from given [JSON][jsonString] the content
+     * at [path][jsonPath]. Returns the value found at the path, if found
      */
     internal fun getJsonAtPath(jsonPath: JsonPath, jsonString: String): String? =
         ExternalJsonPath(jsonPath.value)
