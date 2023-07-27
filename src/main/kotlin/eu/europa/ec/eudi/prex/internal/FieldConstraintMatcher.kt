@@ -37,7 +37,7 @@ internal class FieldConstraintMatcher(private val filterOps: FilterOps) {
         fun matchFilter(j: String): Boolean =
             with(filterOps) { fieldConstraint.filter?.isMatchedBy(j) } ?: true
 
-        // tries to locate within the JSON the specified path.
+        // Tries to locate within the JSON the specified path.
         // If there is a value checks it against the field constraint filter
         fun matchingField(path: JsonPath): String? =
             JsonPathOps.getJsonAtPath(path, claim)?.let { json -> if (matchFilter(json)) json else null }
