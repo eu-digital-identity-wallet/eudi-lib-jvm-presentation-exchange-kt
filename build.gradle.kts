@@ -1,26 +1,18 @@
-object Meta {
-    const val ORG_URL = "https://github.com/eu-digital-identity-wallet"
-    const val PROJ_DESCR = "Implementation of Presentation Exchange v2"
-    const val PROJ_BASE_DIR = "https://github.com/eu-digital-identity-wallet/eudi-lib-jvm-presentation-exchange-kt"
-    const val PROJ_GIT_URL =
-        "scm:git:git@github.com:eu-digital-identity-wallet/eudi-lib-jvm-presentation-exchange-kt.git"
-    const val PRJ_SSH_URL =
-        "scm:git:ssh://github.com:eu-digital-identity-wallet/eudi-lib-jvm-presentation-exchange-kt.git"
-}
+import kotlin.jvm.optionals.getOrNull
 
 plugins {
-    id("org.owasp.dependencycheck") version "8.4.0"
-    id("org.sonarqube") version "4.3.1.3277"
-    kotlin("jvm") version "1.8.21"
-    kotlin("plugin.serialization") version "1.8.21"
-    id("com.diffplug.spotless") version "6.20.0"
+    base
     `java-library`
     `maven-publish`
     signing
     jacoco
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.plugin.serialization)
+    alias(libs.plugins.spotless)
+    alias(libs.plugins.sonarqube)
+    alias(libs.plugins.dependencycheck)
 }
-
-java.sourceCompatibility = JavaVersion.VERSION_17
 
 extra["isReleaseVersion"] = !version.toString().endsWith("SNAPSHOT")
 
@@ -30,18 +22,23 @@ repositories {
 }
 
 dependencies {
-    api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
-    implementation("com.nfeld.jsonpathkt:jsonpathkt:2.0.1")
-    implementation("net.pwall.json:json-kotlin-schema:0.41")
+    api(libs.kotlinx.serialization.json)
+    implementation(libs.jsonpathkt)
+    implementation(libs.json.kotlin.schema)
     testImplementation(kotlin("test"))
 }
 
 java {
     withSourcesJar()
     withJavadocJar()
+    val javaVersion = getVersionFromCatalog("java")
+    sourceCompatibility = JavaVersion.toVersion(javaVersion)
 }
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain {
+        val javaVersion = getVersionFromCatalog("java")
+        languageVersion.set(JavaLanguageVersion.of(javaVersion))
+    }
 }
 
 testing {
@@ -69,8 +66,8 @@ tasks.jacocoTestReport {
     }
 }
 
-val ktlintVersion = "0.50.0"
 spotless {
+    val ktlintVersion = getVersionFromCatalog("ktlintVersion")
     kotlin {
         ktlint(ktlintVersion)
         licenseHeaderFile("FileHeader.txt")
@@ -80,7 +77,17 @@ spotless {
     }
 }
 
+object Meta {
+    const val ORG_URL = "https://github.com/eu-digital-identity-wallet"
+    const val PROJ_DESCR = "Implementation of Presentation Exchange v2"
+    const val PROJ_BASE_DIR = "https://github.com/eu-digital-identity-wallet/eudi-lib-jvm-presentation-exchange-kt"
+    const val PROJ_GIT_URL =
+        "scm:git:git@github.com:eu-digital-identity-wallet/eudi-lib-jvm-presentation-exchange-kt.git"
+    const val PRJ_SSH_URL =
+        "scm:git:ssh://github.com:eu-digital-identity-wallet/eudi-lib-jvm-presentation-exchange-kt.git"
+}
 publishing {
+
     publications {
         create<MavenPublication>("library") {
             from(components["java"])
@@ -141,4 +148,13 @@ signing {
     val signingPassword: String? by project
     useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
     sign(publishing.publications["library"])
+}
+
+fun getVersionFromCatalog(lookup: String): String {
+    val versionCatalog: VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
+    return versionCatalog
+        .findVersion(lookup)
+        .getOrNull()
+        ?.requiredVersion
+        ?: throw GradleException("Version '$lookup' is not specified in the version catalog")
 }
