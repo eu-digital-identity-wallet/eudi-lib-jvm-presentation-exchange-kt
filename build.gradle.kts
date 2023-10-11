@@ -1,4 +1,6 @@
+import org.jetbrains.dokka.DokkaConfiguration.Visibility
 import org.jetbrains.dokka.gradle.DokkaTask
+import java.net.URL
 import kotlin.jvm.optionals.getOrNull
 
 plugins {
@@ -65,7 +67,7 @@ tasks.jar {
 //
 val javadocJar = tasks.register<Jar>("javadocJar") {
     dependsOn(tasks.dokkaHtml)
-    from(tasks.dokkaJavadoc.flatMap { it.outputDirectory })
+    from(tasks.dokkaHtml.flatMap { it.outputDirectory })
     archiveClassifier.set("javadoc")
 }
 
@@ -80,6 +82,13 @@ tasks.withType<DokkaTask>().configureEach {
 
             // contains descriptions for the module and the packages
             includes.from("Module.md")
+
+            documentedVisibilities.set(setOf(Visibility.PUBLIC, Visibility.PROTECTED))
+            sourceLink {
+                localDirectory.set(projectDir.resolve("src"))
+                remoteUrl.set(URL("${Meta.PROJ_BASE_DIR}/tree/main/src"))
+                remoteLineSuffix.set("#L")
+            }
         }
     }
 }
