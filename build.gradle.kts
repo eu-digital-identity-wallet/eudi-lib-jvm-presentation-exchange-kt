@@ -84,8 +84,6 @@ tasks.withType<DokkaTask>().configureEach {
     }
 }
 
-
-
 tasks.jacocoTestReport {
     reports {
         xml.required.set(true)
