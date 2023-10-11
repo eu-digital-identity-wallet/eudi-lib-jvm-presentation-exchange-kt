@@ -1,3 +1,4 @@
+import org.jetbrains.dokka.gradle.DokkaTask
 import kotlin.jvm.optionals.getOrNull
 
 plugins {
@@ -30,7 +31,6 @@ dependencies {
 
 java {
     withSourcesJar()
-    withJavadocJar()
     val javaVersion = getVersionFromCatalog("java")
     sourceCompatibility = JavaVersion.toVersion(javaVersion)
 }
@@ -59,6 +59,32 @@ tasks.jar {
         )
     }
 }
+
+//
+// Redefine javadocJar in terms of Dokka
+//
+val javadocJar = tasks.register<Jar>("javadocJar") {
+    dependsOn(tasks.dokkaHtml)
+    from(tasks.dokkaJavadoc.flatMap { it.outputDirectory })
+    archiveClassifier.set("javadoc")
+}
+
+//
+// Configuration of Dokka engine
+//
+tasks.withType<DokkaTask>().configureEach {
+    dokkaSourceSets {
+        named("main") {
+            // used as project name in the header
+            moduleName.set("Presentation Exchange")
+
+            // contains descriptions for the module and the packages
+            includes.from("Module.md")
+        }
+    }
+}
+
+
 
 tasks.jacocoTestReport {
     reports {
@@ -91,6 +117,7 @@ publishing {
     publications {
         create<MavenPublication>("library") {
             from(components["java"])
+            artifacts + artifact(javadocJar)
             pom {
                 name.set(project.name)
                 description.set(Meta.PROJ_DESCR)
