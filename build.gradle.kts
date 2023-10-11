@@ -31,7 +31,6 @@ dependencies {
 
 java {
     withSourcesJar()
-    withJavadocJar()
     val javaVersion = getVersionFromCatalog("java")
     sourceCompatibility = JavaVersion.toVersion(javaVersion)
 }
@@ -60,6 +59,32 @@ tasks.jar {
         )
     }
 }
+
+//
+// Redefine javadocJar in terms of Dokka
+//
+val javadocJar = tasks.register<Jar>("javadocJar") {
+    dependsOn(tasks.dokkaHtml)
+    from(tasks.dokkaJavadoc.flatMap { it.outputDirectory })
+    archiveClassifier.set("javadoc")
+}
+
+//
+// Configuration of Dokka engine
+//
+tasks.withType<DokkaTask>().configureEach {
+    dokkaSourceSets {
+        named("main") {
+            // used as project name in the header
+            moduleName.set("Presentation Exchange")
+
+            // contains descriptions for the module and the packages
+            includes.from("Module.md")
+        }
+    }
+}
+
+
 
 tasks.jacocoTestReport {
     reports {
@@ -92,6 +117,7 @@ publishing {
     publications {
         create<MavenPublication>("library") {
             from(components["java"])
+            artifacts + artifact(javadocJar)
             pom {
                 name.set(project.name)
                 description.set(Meta.PROJ_DESCR)
@@ -151,17 +177,6 @@ signing {
     sign(publishing.publications["library"])
 }
 
-tasks.withType<DokkaTask>().configureEach {
-    dokkaSourceSets {
-        named("main") {
-            // used as project name in the header
-            moduleName.set("Presentation Exchange")
-
-            // contains descriptions for the module and the packages
-            includes.from("Module.md")
-        }
-    }
-}
 fun getVersionFromCatalog(lookup: String): String {
     val versionCatalog: VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
     return versionCatalog
