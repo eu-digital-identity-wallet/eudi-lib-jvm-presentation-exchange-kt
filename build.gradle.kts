@@ -1,3 +1,5 @@
+import org.jetbrains.dokka.gradle.DokkaTask
+import java.net.URL
 import kotlin.jvm.optionals.getOrNull
 
 plugins {
@@ -150,6 +152,17 @@ signing {
     sign(publishing.publications["library"])
 }
 
+tasks.withType<DokkaTask>().configureEach {
+    dokkaSourceSets {
+        named("main") {
+            // used as project name in the header
+            moduleName.set("Presentation Exchange")
+
+            // contains descriptions for the module and the packages
+            includes.from("Module.md")
+        }
+    }
+}
 fun getVersionFromCatalog(lookup: String): String {
     val versionCatalog: VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
     return versionCatalog
