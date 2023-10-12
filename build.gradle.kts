@@ -84,11 +84,16 @@ tasks.withType<DokkaTask>().configureEach {
             includes.from("Module.md")
 
             documentedVisibilities.set(setOf(Visibility.PUBLIC, Visibility.PROTECTED))
-            sourceLink {
-                localDirectory.set(projectDir.resolve("src"))
-                remoteUrl.set(getRemoteSourceUrl())
-                remoteLineSuffix.set("#L")
-            }
+
+            val remoteSourceUrl = System.getenv()["GIT_REF_NAME"]?.let { URL("${Meta.PROJ_BASE_DIR}/tree/$it/src") }
+            remoteSourceUrl
+                ?.let {
+                    sourceLink {
+                        localDirectory.set(projectDir.resolve("src"))
+                        remoteUrl.set(it)
+                        remoteLineSuffix.set("#L")
+                    }
+                }
         }
     }
 }
@@ -192,9 +197,3 @@ fun getVersionFromCatalog(lookup: String): String {
         ?.requiredVersion
         ?: throw GradleException("Version '$lookup' is not specified in the version catalog")
 }
-
-fun getRemoteSourceUrl(): URL =
-    when (project.extra["isReleaseVersion"]) {
-        false -> "main"
-        else -> System.getenv().getOrDefault("GIT_REF_NAME", "main")
-    }.let { URL("${Meta.PROJ_BASE_DIR}/tree/$it/src") }
