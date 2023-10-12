@@ -84,11 +84,16 @@ tasks.withType<DokkaTask>().configureEach {
             includes.from("Module.md")
 
             documentedVisibilities.set(setOf(Visibility.PUBLIC, Visibility.PROTECTED))
-            sourceLink {
-                localDirectory.set(projectDir.resolve("src"))
-                remoteUrl.set(URL("${Meta.PROJ_BASE_DIR}/tree/main/src"))
-                remoteLineSuffix.set("#L")
-            }
+
+            val remoteSourceUrl = System.getenv()["GIT_REF_NAME"]?.let { URL("${Meta.PROJ_BASE_DIR}/tree/$it/src") }
+            remoteSourceUrl
+                ?.let {
+                    sourceLink {
+                        localDirectory.set(projectDir.resolve("src"))
+                        remoteUrl.set(it)
+                        remoteLineSuffix.set("#L")
+                    }
+                }
         }
     }
 }
