@@ -1,13 +1,14 @@
 import org.jetbrains.dokka.DokkaConfiguration.Visibility
 import org.jetbrains.dokka.gradle.DokkaTask
 import java.net.URL
-import kotlin.jvm.optionals.getOrNull
+
+object Meta {
+    const val BASE_URL = "https://github.com/eu-digital-identity-wallet/eudi-lib-jvm-presentation-exchange-kt"
+}
 
 plugins {
     base
     `java-library`
-    `maven-publish`
-    signing
     jacoco
     alias(libs.plugins.dokka)
     alias(libs.plugins.kotlin.jvm)
@@ -15,9 +16,8 @@ plugins {
     alias(libs.plugins.spotless)
     alias(libs.plugins.sonarqube)
     alias(libs.plugins.dependencycheck)
+    alias(libs.plugins.maven.publish)
 }
-
-extra["isReleaseVersion"] = !version.toString().endsWith("SNAPSHOT")
 
 repositories {
     mavenCentral()
@@ -32,13 +32,13 @@ dependencies {
 }
 
 java {
-    withSourcesJar()
-    val javaVersion = getVersionFromCatalog("java")
+    val javaVersion = libs.versions.java.get()
     sourceCompatibility = JavaVersion.toVersion(javaVersion)
 }
+
 kotlin {
     jvmToolchain {
-        val javaVersion = getVersionFromCatalog("java")
+        val javaVersion = libs.versions.java.get()
         languageVersion.set(JavaLanguageVersion.of(javaVersion))
     }
 }
@@ -63,15 +63,6 @@ tasks.jar {
 }
 
 //
-// Redefine javadocJar in terms of Dokka
-//
-val javadocJar = tasks.register<Jar>("javadocJar") {
-    dependsOn(tasks.dokkaHtml)
-    from(tasks.dokkaHtml.flatMap { it.outputDirectory })
-    archiveClassifier.set("javadoc")
-}
-
-//
 // Configuration of Dokka engine
 //
 tasks.withType<DokkaTask>().configureEach {
@@ -85,7 +76,7 @@ tasks.withType<DokkaTask>().configureEach {
 
             documentedVisibilities.set(setOf(Visibility.PUBLIC, Visibility.PROTECTED))
 
-            val remoteSourceUrl = System.getenv()["GIT_REF_NAME"]?.let { URL("${Meta.PROJ_BASE_DIR}/tree/$it/src") }
+            val remoteSourceUrl = System.getenv()["GIT_REF_NAME"]?.let { URL("${Meta.BASE_URL}/tree/$it/src") }
             remoteSourceUrl
                 ?.let {
                     sourceLink {
@@ -105,7 +96,7 @@ tasks.jacocoTestReport {
 }
 
 spotless {
-    val ktlintVersion = getVersionFromCatalog("ktlintVersion")
+    val ktlintVersion = libs.versions.ktlint.get()
     kotlin {
         ktlint(ktlintVersion)
         licenseHeaderFile("FileHeader.txt")
@@ -115,85 +106,11 @@ spotless {
     }
 }
 
-object Meta {
-    const val ORG_URL = "https://github.com/eu-digital-identity-wallet"
-    const val PROJ_DESCR = "Implementation of Presentation Exchange v2"
-    const val PROJ_BASE_DIR = "https://github.com/eu-digital-identity-wallet/eudi-lib-jvm-presentation-exchange-kt"
-    const val PROJ_GIT_URL =
-        "scm:git:git@github.com:eu-digital-identity-wallet/eudi-lib-jvm-presentation-exchange-kt.git"
-    const val PRJ_SSH_URL =
-        "scm:git:ssh://github.com:eu-digital-identity-wallet/eudi-lib-jvm-presentation-exchange-kt.git"
-}
-publishing {
-
-    publications {
-        create<MavenPublication>("library") {
-            from(components["java"])
-            artifacts + artifact(javadocJar)
-            pom {
-                name.set(project.name)
-                description.set(Meta.PROJ_DESCR)
-                url.set(Meta.PROJ_BASE_DIR)
-                licenses {
-                    license {
-                        name.set("The Apache License, Version 2.0")
-                        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
-                    }
-                }
-                scm {
-                    connection.set(Meta.PROJ_GIT_URL)
-                    developerConnection.set(Meta.PRJ_SSH_URL)
-                    url.set(Meta.PROJ_BASE_DIR)
-                }
-                issueManagement {
-                    system.set("github")
-                    url.set(Meta.PROJ_BASE_DIR + "/issues")
-                }
-                ciManagement {
-                    system.set("github")
-                    url.set(Meta.PROJ_BASE_DIR + "/actions")
-                }
-                developers {
-                    organization {
-                        url.set(Meta.ORG_URL)
-                    }
-                }
-            }
+mavenPublishing {
+    pom {
+        ciManagement {
+            system = "github"
+            url = "${Meta.BASE_URL}/actions"
         }
     }
-    repositories {
-
-        val sonaUri =
-            if ((extra["isReleaseVersion"]) as Boolean) {
-                "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-            } else {
-                "https://s01.oss.sonatype.org/content/repositories/snapshots/"
-            }
-
-        maven {
-            name = "sonatype"
-            url = uri(sonaUri)
-            credentials(PasswordCredentials::class)
-        }
-    }
-}
-
-signing {
-    setRequired({
-        (project.extra["isReleaseVersion"] as Boolean) && gradle.taskGraph.hasTask("publish")
-    })
-    val signingKeyId: String? by project
-    val signingKey: String? by project
-    val signingPassword: String? by project
-    useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
-    sign(publishing.publications["library"])
-}
-
-fun getVersionFromCatalog(lookup: String): String {
-    val versionCatalog: VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
-    return versionCatalog
-        .findVersion(lookup)
-        .getOrNull()
-        ?.requiredVersion
-        ?: throw GradleException("Version '$lookup' is not specified in the version catalog")
 }
