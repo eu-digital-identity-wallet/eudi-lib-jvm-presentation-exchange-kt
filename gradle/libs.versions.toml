@@ -12,14 +12,13 @@ sonarqube = "4.3.1.3277"
 dependencycheck = "8.4.0"
 jsonKotlinSchema = "0.41"
 jsonpathkt="2.0.1"
+mavenPublish="0.25.3"
 
 [libraries]
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 nimbus-jose-jwt = { module = "com.nimbusds:nimbus-jose-jwt", version.ref = "nimbusJoseWwt" }
 json-kotlin-schema = { module = "net.pwall.json:json-kotlin-schema", version.ref = "jsonKotlinSchema" }
 jsonpathkt = { module = "com.nfeld.jsonpathkt:jsonpathkt", version.ref = "jsonpathkt" }
-
-
 
 [plugins]
 foojay-resolver-convention = { id = "org.gradle.toolchains.foojay-resolver-convention", version.ref = "foojay" }
@@ -29,5 +28,4 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-plugin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 dependencycheck = { id = "org.owasp.dependencycheck", version.ref = "dependencycheck" }
 sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
-
-
+maven-publish = { id = "com.vanniktech.maven.publish", version.ref="mavenPublish" }
