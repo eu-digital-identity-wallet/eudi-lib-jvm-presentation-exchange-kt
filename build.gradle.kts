@@ -33,12 +33,12 @@ dependencies {
 
 java {
     withSourcesJar()
-    val javaVersion = getVersionFromCatalog("java")
+    val javaVersion = libs.versions.java.get()
     sourceCompatibility = JavaVersion.toVersion(javaVersion)
 }
 kotlin {
     jvmToolchain {
-        val javaVersion = getVersionFromCatalog("java")
+        val javaVersion = libs.versions.java.get()
         languageVersion.set(JavaLanguageVersion.of(javaVersion))
     }
 }
@@ -105,7 +105,7 @@ tasks.jacocoTestReport {
 }
 
 spotless {
-    val ktlintVersion = getVersionFromCatalog("ktlintVersion")
+    val ktlintVersion = libs.versions.ktlint.get()
     kotlin {
         ktlint(ktlintVersion)
         licenseHeaderFile("FileHeader.txt")
@@ -187,13 +187,4 @@ signing {
     val signingPassword: String? by project
     useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
     sign(publishing.publications["library"])
-}
-
-fun getVersionFromCatalog(lookup: String): String {
-    val versionCatalog: VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
-    return versionCatalog
-        .findVersion(lookup)
-        .getOrNull()
-        ?.requiredVersion
-        ?: throw GradleException("Version '$lookup' is not specified in the version catalog")
 }
