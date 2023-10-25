@@ -1,11 +1,12 @@
-name: Gitleaks Secrets Scan
+name: Secret Scanning - Gitleaks
 on:
   push:
-    branches: [ 'main', 'feature/*' ]
+    branches: [ 'main', 'release/*', 'feature/*' ]
     tags: [ v* ]
   workflow_dispatch:
+
 jobs:
-  Credentials_Scanning:
+  Secret_Scanning:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -20,7 +21,7 @@ jobs:
             docker exec GL git config --global --add safe.directory '/src'
             docker exec --user $(id -u):$(id -g) GL gitleaks detect --source=/src --verbose -c /src/security/gitleaks/gitleaks.toml --report-path /src/gitleaks-report.json
         continue-on-error: true
- 
+
       - name: upload_artifacts   
         uses: actions/upload-artifact@v3
         with:
