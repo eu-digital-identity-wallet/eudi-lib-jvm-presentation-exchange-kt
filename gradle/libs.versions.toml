@@ -10,7 +10,7 @@ nimbusJoseWwt = "9.35"
 ktlint = "0.50.0"
 sonarqube = "4.3.1.3277"
 dependencycheck = "8.4.0"
-jsonKotlinSchema = "0.41"
+jsonKotlinSchema = "0.42"
 jsonpathkt="2.0.1"
 mavenPublish="0.25.3"
 
