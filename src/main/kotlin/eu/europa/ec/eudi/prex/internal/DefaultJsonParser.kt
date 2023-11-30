@@ -80,7 +80,7 @@ internal class DefaultJsonParser(private val json: Json) : JsonParser {
         this.json.parseToJsonElement(jsonString).jsonObject.mapToPS()
 
     private fun JsonObject.mapToPS(): Result<PresentationSubmission> = runCatching {
-        val pdObject = PresentationSubmissionEmbedLocation.values()
+        val pdObject = PresentationSubmissionEmbedLocation.entries
             .firstNotNullOfOrNull { location -> location.extractFrom(this@mapToPS) } ?: this
         json.decodeFromJsonElement(pdObject)
     }

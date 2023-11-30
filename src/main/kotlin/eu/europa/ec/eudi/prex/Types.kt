@@ -71,9 +71,9 @@ sealed interface JwtAlgorithm {
         @JvmStatic
         fun jwtAlgorithm(name: String): JwtAlgorithm? = hmacAlgorithm(name) ?: digSigAlgorithm(name)
 
-        private fun hmacAlgorithm(name: String): Hmac? = Hmac.values().find { it.name == name }
+        private fun hmacAlgorithm(name: String): Hmac? = Hmac.entries.find { it.name == name }
 
-        private fun digSigAlgorithm(name: String): DigSig? = DigSig.values().find { it.name == name }
+        private fun digSigAlgorithm(name: String): DigSig? = DigSig.entries.find { it.name == name }
     }
 }
 
@@ -103,7 +103,9 @@ enum class LdpProof {
 @Serializable(with = ClaimFormatSerializer::class)
 sealed interface ClaimFormat {
 
-    object MsoMdoc : ClaimFormat
+    data object MsoMdoc : ClaimFormat {
+        private fun readResolve(): Any = MsoMdoc
+    }
 
     enum class JwtType : ClaimFormat {
         JWT,
@@ -279,8 +281,8 @@ sealed interface From {
 }
 
 sealed interface Rule {
-    object All : Rule {
-        override fun toString(): String = "All"
+    data object All : Rule {
+        private fun readResolve(): Any = All
     }
 
     data class Pick(val count: Int?, val min: Int?, val max: Int?) : Rule {

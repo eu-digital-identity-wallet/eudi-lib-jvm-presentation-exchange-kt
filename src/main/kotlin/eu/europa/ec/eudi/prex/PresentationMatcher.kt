@@ -28,7 +28,9 @@ sealed interface FieldQueryResult {
     /**
      * Indicates that a [FieldConstraint] is not satisfied by a claim
      */
-    object RequiredFieldNotFound : FieldQueryResult
+    data object RequiredFieldNotFound : FieldQueryResult {
+        private fun readResolve(): Any = RequiredFieldNotFound
+    }
 
     /**
      * Indicates that a [FieldConstraint] is satisfied by a claim.
@@ -51,7 +53,9 @@ sealed interface FieldQueryResult {
          * Indicates that the claim doesn't contain a field as described in the [FieldConstraint]
          * yet this is not a reason to reject the claim since the field is/was optional
          */
-        object OptionalFieldNotFound : CandidateField
+        data object OptionalFieldNotFound : CandidateField {
+            private fun readResolve(): Any = OptionalFieldNotFound
+        }
     }
 }
 
@@ -73,8 +77,12 @@ sealed interface InputDescriptorEvaluation {
      * Indicates that claim doesn't satisfy the constraints of the [InputDescriptor]
      */
     sealed interface NotMatchingClaim : InputDescriptorEvaluation
-    object NotMatchedFieldConstraints : NotMatchingClaim
-    object UnsupportedFormat : NotMatchingClaim
+    data object NotMatchedFieldConstraints : NotMatchingClaim {
+        private fun readResolve(): Any = NotMatchedFieldConstraints
+    }
+    data object UnsupportedFormat : NotMatchingClaim {
+        private fun readResolve(): Any = UnsupportedFormat
+    }
 }
 
 typealias ClaimId = String
