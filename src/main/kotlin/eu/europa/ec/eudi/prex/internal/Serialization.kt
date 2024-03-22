@@ -181,7 +181,7 @@ internal object ClaimFormatSerializer : KSerializer<ClaimFormat> {
 }
 
 /**
- * Json ser-de for [JsonPath]
+ * Json ser-de for  [JsonPath]
  */
 internal object JsonPathSerializer : KSerializer<JsonPath> {
     override val descriptor: SerialDescriptor
