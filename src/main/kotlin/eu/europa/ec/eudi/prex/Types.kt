@@ -25,15 +25,15 @@ import kotlinx.serialization.json.JsonObject
 
 @Serializable
 @JvmInline
-value class Id(val value: String)
+value class Id(val value: String) : java.io.Serializable
 
 @Serializable
 @JvmInline
-value class Name(val value: String)
+value class Name(val value: String) : java.io.Serializable
 
 @Serializable
 @JvmInline
-value class Purpose(val value: String)
+value class Purpose(val value: String) : java.io.Serializable
 
 typealias NonEmptySet<T> = List<T>
 
@@ -101,7 +101,7 @@ enum class LdpProof {
 }
 
 @Serializable(with = ClaimFormatSerializer::class)
-sealed interface ClaimFormat {
+sealed interface ClaimFormat : java.io.Serializable {
 
     data object MsoMdoc : ClaimFormat {
         private fun readResolve(): Any = MsoMdoc
@@ -122,7 +122,7 @@ sealed interface ClaimFormat {
     }
 }
 
-sealed interface SupportedClaimFormat<CF : ClaimFormat> {
+sealed interface SupportedClaimFormat<CF : ClaimFormat> : java.io.Serializable {
 
     val type: CF
 
@@ -188,7 +188,7 @@ data class Format(val supportedClaimFormats: List<SupportedClaimFormat<*>> = emp
  */
 @Serializable(with = JsonPathSerializer::class)
 @JvmInline
-value class JsonPath private constructor(val value: String) {
+value class JsonPath private constructor(val value: String) : java.io.Serializable {
 
     companion object {
         fun jsonPath(s: String): JsonPath? = if (JsonPathOps.isValid(s)) JsonPath(s) else null
@@ -216,10 +216,10 @@ data class FieldConstraint(
     val filter: Filter? = null,
     val optional: Boolean = false,
     @SerialName("intent_to_retain") val intentToRetain: Boolean? = null,
-)
+) : java.io.Serializable
 
 @Serializable(with = ConstraintsSerializer::class)
-sealed interface Constraints {
+sealed interface Constraints : java.io.Serializable {
     fun fields(): List<FieldConstraint> = when (this) {
         is Fields -> fieldConstraints
         is FieldsAndDisclosure -> fieldConstraints
@@ -273,14 +273,14 @@ sealed interface Constraints {
 
 @Serializable
 @JvmInline
-value class Group(val value: String)
+value class Group(val value: String) : java.io.Serializable
 
-sealed interface From {
+sealed interface From : java.io.Serializable {
     data class FromGroup(val group: Group) : From
     data class FromNested(val nested: List<SubmissionRequirement>) : From
 }
 
-sealed interface Rule {
+sealed interface Rule : java.io.Serializable {
     data object All : Rule {
         private fun readResolve(): Any = All
     }
@@ -301,7 +301,7 @@ data class SubmissionRequirement(
     val from: From,
     val name: Name? = null,
     val purpose: Purpose? = null,
-)
+) : java.io.Serializable
 
 fun SubmissionRequirement.allGroups(): Set<Group> =
     when (from) {
@@ -311,7 +311,7 @@ fun SubmissionRequirement.allGroups(): Set<Group> =
 
 @Serializable
 @JvmInline
-value class InputDescriptorId(val value: String)
+value class InputDescriptorId(val value: String) : java.io.Serializable
 
 /**
  * Input Descriptors are objects used to describe the information a Verifier requires of a Holder.
@@ -326,7 +326,7 @@ data class InputDescriptor(
     val format: Format? = null,
     val constraints: Constraints,
     @SerialName("group") val groups: List<Group>? = null,
-)
+) : java.io.Serializable
 
 /**
  * @param id The Presentation Definition MUST contain an id property.
@@ -353,7 +353,7 @@ data class PresentationDefinition(
     @SerialName("input_descriptors")
     val inputDescriptors: List<InputDescriptor>,
     @SerialName("submission_requirements") val submissionRequirements: List<SubmissionRequirement>? = null,
-) {
+) : java.io.Serializable {
 
     init {
 
@@ -392,7 +392,7 @@ data class DescriptorMap(
     @Required val id: InputDescriptorId,
     @Required val format: ClaimFormat,
     @Required val path: JsonPath,
-)
+) : java.io.Serializable
 
 @Serializable
 data class PresentationSubmission(
@@ -403,4 +403,4 @@ data class PresentationSubmission(
     @Required
     @SerialName("descriptor_map")
     val descriptorMaps: List<DescriptorMap>,
-)
+) : java.io.Serializable
