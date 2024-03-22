@@ -176,7 +176,7 @@ sealed interface SupportedClaimFormat<CF : ClaimFormat> : java.io.Serializable {
 }
 
 @Serializable(with = FormatSerializer::class)
-data class Format(val supportedClaimFormats: List<SupportedClaimFormat<*>> = emptyList()) {
+data class Format(val supportedClaimFormats: List<SupportedClaimFormat<*>> = emptyList()) : java.io.Serializable {
     companion object {
         fun invoke(supportedClaimFormat: SupportedClaimFormat<*>, vararg other: SupportedClaimFormat<*>): Format =
             Format(listOf(supportedClaimFormat).plus(other.toList()))
