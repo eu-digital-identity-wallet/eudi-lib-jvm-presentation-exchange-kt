@@ -26,7 +26,7 @@ import eu.europa.ec.eudi.prex.JsonPathOps
 /**
  * Evaluates whether a claim satisfies a field constraint
  */
-internal class FieldConstraintMatcher(private val filterOps: FilterOps) {
+internal object FieldConstraintMatcher {
 
     /**
      * Evaluates whether a claim satisfies a field constraint
@@ -35,7 +35,7 @@ internal class FieldConstraintMatcher(private val filterOps: FilterOps) {
         // Check whether the provided json satisfies the constraints of the filter
         // if the field constraint doesn't contain a filter, true is being returned
         fun matchFilter(j: String): Boolean =
-            with(filterOps) { fieldConstraint.filter?.isMatchedBy(j) } ?: true
+            with(FilterOps) { fieldConstraint.filter?.isMatchedBy(j) } ?: true
 
         // Tries to locate within the JSON the specified path.
         // If there is a value checks it against the field constraint filter

@@ -21,7 +21,9 @@ import eu.europa.ec.eudi.prex.internal.*
 import kotlinx.serialization.Required
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonObject
 
 @Serializable
 @JvmInline
@@ -199,7 +201,15 @@ value class JsonPath private constructor(val value: String) : java.io.Serializab
  * A filter is a [JsonObject] which is expected to contain a
  * JSON Schema definition
  */
-typealias Filter = JsonObject
+@Serializable(with = FilterSerializer::class)
+@JvmInline
+value class Filter private constructor(val json: String) : java.io.Serializable {
+    fun jsonObject(): JsonObject = JsonSupport.parseToJsonElement(json).jsonObject
+
+    companion object {
+        fun filter(json: JsonObject): Filter = Filter(JsonSupport.encodeToString(json))
+    }
+}
 
 /**
  * [paths]: an array of one or more [JsonPath] expressions

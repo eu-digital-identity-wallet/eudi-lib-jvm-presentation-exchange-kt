@@ -23,6 +23,14 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonObject
+
+/**
+ * Kotlinx JSON serialization
+ */
+internal val JsonSupport: Json by lazy { Json { ignoreUnknownKeys = true } }
 
 /**
  * Json ser-de for [Format]
@@ -195,6 +203,26 @@ internal object JsonPathSerializer : KSerializer<JsonPath> {
 
     override fun serialize(encoder: Encoder, value: JsonPath) {
         encoder.encodeString(value.value)
+    }
+}
+
+/**
+ * Json ser-de for  [Filter]
+ */
+@OptIn(ExperimentalSerializationApi::class)
+internal object FilterSerializer : KSerializer<Filter> {
+    private val delegateSerializer = serializer<JsonObject>()
+    override val descriptor: SerialDescriptor
+        get() = SerialDescriptor("Filter", delegateSerializer.descriptor)
+
+    override fun deserialize(decoder: Decoder): Filter {
+        val data = decoder.decodeSerializableValue(delegateSerializer)
+        return Filter.filter(data)
+    }
+
+    override fun serialize(encoder: Encoder, value: Filter) {
+        val data = value.jsonObject()
+        encoder.encodeSerializableValue(delegateSerializer, data)
     }
 }
 

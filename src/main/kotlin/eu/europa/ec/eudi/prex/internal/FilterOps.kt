@@ -18,7 +18,7 @@ package eu.europa.ec.eudi.prex.internal
 import eu.europa.ec.eudi.prex.Filter
 import net.pwall.json.schema.JSONSchema
 
-internal class FilterOps(private val filterSerializer: (Filter) -> String) {
+internal object FilterOps {
 
     /**
      * Checks whether a given [json] satisfies the
@@ -27,8 +27,7 @@ internal class FilterOps(private val filterSerializer: (Filter) -> String) {
     internal fun Filter.isMatchedBy(json: String): Boolean = isValid(this, json)
 
     private fun isValid(f: Filter, j: String): Boolean {
-        val jsonStr = filterSerializer(f)
-        val jsonSchema = JSONSchema.parse(jsonStr)
+        val jsonSchema = JSONSchema.parse(f.json)
         return jsonSchema.validate(j, net.pwall.json.pointer.JSONPointer.root)
     }
 }

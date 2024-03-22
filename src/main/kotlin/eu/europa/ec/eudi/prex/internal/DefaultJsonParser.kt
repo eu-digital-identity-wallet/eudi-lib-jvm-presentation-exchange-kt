@@ -20,7 +20,10 @@ import eu.europa.ec.eudi.prex.PresentationDefinition
 import eu.europa.ec.eudi.prex.PresentationSubmission
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.decodeFromStream
+import kotlinx.serialization.json.jsonObject
 import java.io.InputStream
 
 /**
@@ -58,32 +61,32 @@ private enum class PresentationSubmissionEmbedLocation {
  * Kotlinx Serialization library
  */
 @OptIn(ExperimentalSerializationApi::class)
-internal class DefaultJsonParser(private val json: Json) : JsonParser {
+internal class DefaultJsonParser : JsonParser {
 
     override fun decodePresentationDefinition(inputStream: InputStream): Result<PresentationDefinition> =
-        json.decodeFromStream<JsonObject>(inputStream).mapToPd()
+        JsonSupport.decodeFromStream<JsonObject>(inputStream).mapToPd()
 
     override fun decodePresentationDefinition(jsonString: String): Result<PresentationDefinition> =
-        json.parseToJsonElement(jsonString).jsonObject.mapToPd()
+        JsonSupport.parseToJsonElement(jsonString).jsonObject.mapToPd()
 
     private fun JsonObject.mapToPd(): Result<PresentationDefinition> = runCatching {
         val pdObject = this[presentationDefinitionKey]?.jsonObject ?: this
-        json.decodeFromJsonElement(pdObject)
+        JsonSupport.decodeFromJsonElement(pdObject)
     }
 
-    override fun PresentationDefinition.encode(): String = json.encodeToString(this)
+    override fun PresentationDefinition.encode(): String = JsonSupport.encodeToString(this)
 
     override fun decodePresentationSubmission(inputStream: InputStream): Result<PresentationSubmission> =
-        json.decodeFromStream<JsonObject>(inputStream).mapToPS()
+        JsonSupport.decodeFromStream<JsonObject>(inputStream).mapToPS()
 
     override fun decodePresentationSubmission(jsonString: String): Result<PresentationSubmission> =
-        this.json.parseToJsonElement(jsonString).jsonObject.mapToPS()
+        JsonSupport.parseToJsonElement(jsonString).jsonObject.mapToPS()
 
     private fun JsonObject.mapToPS(): Result<PresentationSubmission> = runCatching {
         val pdObject = PresentationSubmissionEmbedLocation.entries
             .firstNotNullOfOrNull { location -> location.extractFrom(this@mapToPS) } ?: this
-        json.decodeFromJsonElement(pdObject)
+        JsonSupport.decodeFromJsonElement(pdObject)
     }
 
-    override fun PresentationSubmission.encode(): String = json.encodeToString(this)
+    override fun PresentationSubmission.encode(): String = JsonSupport.encodeToString(this)
 }

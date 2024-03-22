@@ -19,8 +19,6 @@ import eu.europa.ec.eudi.prex.*
 import eu.europa.ec.eudi.prex.InputDescriptorEvaluation.CandidateClaim
 import eu.europa.ec.eudi.prex.InputDescriptorEvaluation.NotMatchedFieldConstraints
 import eu.europa.ec.eudi.prex.internal.DefaultPresentationMatcher.Evaluator
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 /**
  * Holds the [InputDescriptorEvaluation] per [InputDescriptorId] per [Claim].
@@ -29,16 +27,14 @@ import kotlinx.serialization.json.Json
  */
 private typealias ClaimsEvaluation = Map<ClaimId, Map<InputDescriptorId, InputDescriptorEvaluation>>
 
-internal class DefaultPresentationMatcher(
-    private val inputDescriptorEvaluator: InputDescriptorEvaluator,
-) : PresentationMatcher {
+internal object DefaultPresentationMatcher : PresentationMatcher {
 
     override fun match(pd: PresentationDefinition, claims: List<Claim>): Match {
         // Evaluate the input descriptor match for all descriptors and claims
         val claimsEvaluation = claims.associate { claim ->
-            claim.uniqueId to inputDescriptorEvaluator.matchInputDescriptors(pd.format, pd.inputDescriptors, claim)
+            claim.uniqueId to InputDescriptorEvaluator.matchInputDescriptors(pd.format, pd.inputDescriptors, claim)
         }
-        // split evaluations to candidate and not matching
+        // split evaluations to a candidate and not matching
         val (candidateClaims, notMatchingClaims) = splitPerDescriptor(pd, claimsEvaluation)
         // choose evaluator based on the presentation definition content
         val evaluator = evaluatorOf(pd)
@@ -122,14 +118,4 @@ internal class DefaultPresentationMatcher(
         mapValues { it.value[inputDescriptorId] }
             .filterValues { it is E }
             .mapValues { it.value as E }
-
-    companion object {
-
-        fun build(json: Json): PresentationMatcher {
-            val filterOps = FilterOps { json.encodeToString(it) }
-            val fieldMatcher = FieldConstraintMatcher(filterOps)
-            val inputDescriptorEvaluator = InputDescriptorEvaluator(fieldMatcher)
-            return DefaultPresentationMatcher(inputDescriptorEvaluator)
-        }
-    }
 }

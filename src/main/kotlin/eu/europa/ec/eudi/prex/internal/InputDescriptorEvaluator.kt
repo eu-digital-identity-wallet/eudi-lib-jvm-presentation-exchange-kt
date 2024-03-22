@@ -26,7 +26,7 @@ import eu.europa.ec.eudi.prex.InputDescriptorEvaluation.NotMatchedFieldConstrain
  *
  *
  */
-internal class InputDescriptorEvaluator(private val fieldConstraintMatcher: FieldConstraintMatcher) {
+internal object InputDescriptorEvaluator {
 
     /**
      * Evaluates whether a given [claim] satisfies a set of [inputDescriptors]
@@ -37,7 +37,14 @@ internal class InputDescriptorEvaluator(private val fieldConstraintMatcher: Fiel
         claim: Claim,
     ): Map<InputDescriptorId, InputDescriptorEvaluation> {
         val claimJsonString = claim.asJsonString()
-        return inputDescriptors.associate { it.id to evaluate(presentationDefinitionFormat, it, claim.format, claimJsonString) }
+        return inputDescriptors.associate {
+            it.id to evaluate(
+                presentationDefinitionFormat,
+                it,
+                claim.format,
+                claimJsonString,
+            )
+        }
     }
 
     /**
@@ -74,7 +81,7 @@ internal class InputDescriptorEvaluator(private val fieldConstraintMatcher: Fiel
         fieldConstraints: List<FieldConstraint>,
         claimJsonString: String,
     ): InputDescriptorEvaluation {
-        fun FieldConstraint.query() = with(fieldConstraintMatcher) { match(this@query, claimJsonString) }
+        fun FieldConstraint.query() = with(FieldConstraintMatcher) { match(this@query, claimJsonString) }
 
         val fieldQueryResults: Map<FieldConstraint, FieldQueryResult> =
             fieldConstraints.associateWith { it.query() }
