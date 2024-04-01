@@ -15,9 +15,9 @@
  */
 package eu.europa.ec.eudi.prex
 
-import org.junit.jupiter.api.fail
 import java.io.InputStream
 import kotlin.test.Test
+import kotlin.test.fail
 
 class PresentationDefinitionTest {
 
@@ -60,7 +60,7 @@ class PresentationDefinitionTest {
     private fun testParseDefinition(f: String): PresentationDefinition =
         PresentationExchange.jsonParser.decodePresentationDefinition(load(f)!!)
             .also { println(it) }
-            .fold(onSuccess = { it }, onFailure = { fail(it) })
+            .fold(onSuccess = { it }, onFailure = { fail(it.message, it) })
 
     private fun load(f: String): InputStream? =
         PresentationDefinitionTest::class.java.classLoader.getResourceAsStream(f)

@@ -18,7 +18,7 @@ package eu.europa.ec.eudi.prex
 import eu.europa.ec.eudi.prex.TestUtils.deserializeObject
 import eu.europa.ec.eudi.prex.TestUtils.loadResource
 import eu.europa.ec.eudi.prex.TestUtils.serializeObject
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 internal class PresentationSubmissionSerializationTest {
