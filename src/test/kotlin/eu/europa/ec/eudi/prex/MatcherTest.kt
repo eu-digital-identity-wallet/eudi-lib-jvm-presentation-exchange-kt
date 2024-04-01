@@ -22,6 +22,45 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import kotlinx.serialization.json.putJsonObject
 import java.io.InputStream
+import kotlin.test.Test
+import kotlin.test.assertIs
+
+internal class MatcherTest {
+
+    @Test
+    fun `basic example`() {
+        val presentationDefinition = loadPresentationDefinition("v2.0.0/presentation-definition/basic_example.json")
+        val bankAccount = SimpleClaim(
+            uniqueId = "bankAccountClaim",
+            format = "ldp",
+            value = buildJsonObject {
+                putJsonObject("vc") {
+                    put("issuer", "did:example:123")
+                    putJsonObject("credentialSchema") {
+                        put("id", "https://bank-standards.example.com/fullaccountroute.json")
+                    }
+                }
+            },
+        )
+        val passport = SimpleClaim(
+            uniqueId = "samplePassport",
+            format = "ldp",
+            value = buildJsonObject {
+                putJsonObject("credentialSchema") {
+                    put("id", "hub://did:foo:123/Collections/schema.us.gov/passport.json")
+                }
+                putJsonObject("credentialSubject") {
+                    put("birth_date", "1974-02-11")
+                }
+            },
+        )
+        val claims = listOf(bankAccount, passport)
+        assertIs<Match.Matched>(PresentationExchange.matcher.match(presentationDefinition, claims))
+//            .also { match ->
+//                printResult(match) { text -> println(text) }
+//            }
+    }
+}
 
 private fun loadPresentationDefinition(f: String): PresentationDefinition =
     PresentationExchange.jsonParser.decodePresentationDefinition(load(f)!!).getOrThrow()
@@ -29,7 +68,7 @@ private fun loadPresentationDefinition(f: String): PresentationDefinition =
 private fun load(f: String): InputStream? =
     PresentationDefinitionTest::class.java.classLoader.getResourceAsStream(f)
 
-private fun printResult(match: Match) {
+private fun printResult(match: Match, log: (String) -> Unit = {}) {
     fun CandidateField.str(): String = when (this) {
         is Found -> "in path ${path.value} with content $content"
         is OptionalFieldNotFound -> "not present but was optional"
@@ -49,67 +88,35 @@ private fun printResult(match: Match) {
 
     when (match) {
         is Match.NotMatched -> {
-            println("Failed to match presentation definition.")
+            log("Failed to match presentation definition.")
             match.details.forEach {
                 val (inputDescriptorId, notMatchedPerClaim) = it
-                println("\t${inputDescriptorId.str()}")
+                log("\t${inputDescriptorId.str()}")
                 notMatchedPerClaim.forEach { entry ->
                     val (claimId, evaluation) = entry
-                    println("\t\tClaim $claimId ${evaluation.str()}")
+                    log("\t\tClaim $claimId ${evaluation.str()}")
                 }
             }
         }
 
         is Match.Matched -> {
-            println("Matched presentation definition.")
+            log("Matched presentation definition.")
             match.matches.forEach {
                 val (inputDescriptorId, candidatesPerClaim) = it
-                println("\t${inputDescriptorId.str()}")
+                log("\t${inputDescriptorId.str()}")
                 candidatesPerClaim.forEach { entry ->
                     val (claimId, evaluation) = entry
-                    println("\t\tClaim $claimId ${evaluation.str()}")
+                    log("\t\tClaim $claimId ${evaluation.str()}")
                 }
             }
         }
     }
 }
 
-val bankAccount = SimpleClaim(
-    uniqueId = "bankAccountClaim",
-    format = "ldp",
-    value = buildJsonObject {
-        putJsonObject("vc") {
-            put("issuer", "did:example:123")
-            putJsonObject("credentialSchema") {
-                put("id", "https://bank-standards.example.com/fullaccountroute.json")
-            }
-        }
-    },
-)
-val passport = SimpleClaim(
-    uniqueId = "samplePassport",
-    format = "ldp",
-    value = buildJsonObject {
-        putJsonObject("credentialSchema") {
-            put("id", "hub://did:foo:123/Collections/schema.us.gov/passport.json")
-        }
-        putJsonObject("credentialSubject") {
-            put("birth_date", "1974-02-11")
-        }
-    },
-)
-
-data class SimpleClaim(override val uniqueId: String, override val format: String, private val value: JsonObject) :
-    Claim {
-        override fun asJsonString(): String = value.toString()
-    }
-
-fun basicExample() {
-    val presentationDefinition = loadPresentationDefinition("v2.0.0/presentation-definition/basic_example.json")
-    val claims = listOf(bankAccount, passport)
-    PresentationExchange.matcher.match(presentationDefinition, claims).also { printResult(it) }
-}
-
-fun main() {
-    basicExample()
+private data class SimpleClaim(
+    override val uniqueId: String,
+    override val format: String,
+    private val value: JsonObject,
+) : Claim {
+    override fun asJsonString(): String = value.toString()
 }

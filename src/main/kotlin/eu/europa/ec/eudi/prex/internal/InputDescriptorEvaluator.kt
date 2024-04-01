@@ -69,9 +69,7 @@ internal object InputDescriptorEvaluator {
         presentationDefinitionFormat: Format?,
         claimFormat: String,
     ): Boolean {
-        val claimFormats = (inputDescriptor.format ?: presentationDefinitionFormat)
-            ?.jsonObject()?.keys
-            ?: emptySet()
+        val claimFormats = ((inputDescriptor.format ?: presentationDefinitionFormat)?.jsonObject()?.keys) ?: setOf(claimFormat)
         return claimFormat in claimFormats
     }
 
