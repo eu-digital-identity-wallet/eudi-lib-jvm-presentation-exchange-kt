@@ -34,6 +34,11 @@ internal class PresentationDefinitionSerializationTest {
     }
 
     @Test
+    fun `should serialize SD-JWT VC`() {
+        testPresentationSerialization("v2.0.0/presentation-definition/pd_sd_jwt_vc.json")
+    }
+
+    @Test
     fun `should serialize single group example`() {
         testPresentationSerialization("v2.0.0/presentation-definition/single_group_example.json")
     }

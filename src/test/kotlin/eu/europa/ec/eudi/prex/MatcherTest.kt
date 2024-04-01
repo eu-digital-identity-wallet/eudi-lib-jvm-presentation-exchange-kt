@@ -60,6 +60,25 @@ internal class MatcherTest {
 //                printResult(match) { text -> println(text) }
 //            }
     }
+
+    @Test
+    fun `SD-JWT VC`() {
+        val presentationDefinition = loadPresentationDefinition("v2.0.0/presentation-definition/pd_sd_jwt_vc.json")
+        val pid = SimpleClaim(
+            uniqueId = "PID",
+            format = "vc+sd-jwt",
+            value = buildJsonObject {
+                put("vct", "https://credentials.example.com/identity_credential")
+                put("family_name", "Doe")
+                put("given_name", "John")
+            },
+        )
+        val claims = listOf(pid)
+        assertIs<Match.Matched>(PresentationExchange.matcher.match(presentationDefinition, claims))
+//            .also { match ->
+//                printResult(match) { text -> println(text) }
+//            }
+    }
 }
 
 private fun loadPresentationDefinition(f: String): PresentationDefinition =
