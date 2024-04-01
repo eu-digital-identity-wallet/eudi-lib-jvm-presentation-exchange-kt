@@ -39,147 +39,14 @@ value class Purpose(val value: String) : java.io.Serializable
 
 typealias NonEmptySet<T> = List<T>
 
-/**
- *  According to JSON Web Algorithms (JWA)
- */
-
-@Serializable(with = JwtAlgorithmSerializer::class)
-sealed interface JwtAlgorithm {
-
-    val name: String
-
-    enum class Hmac : JwtAlgorithm {
-        HS256, // HMAC using SHA-256 (Required)
-        HS384, // HMAC using SHA-384
-        HS512, // HMAC using SHA-512
-    }
-
-    enum class DigSig : JwtAlgorithm {
-        RS256, // RSASSA-PKCS1-v1_5 using SHA-256 (Recommended)
-        RS384, // RSASSA-PKCS1-v1_5 using SHA-384
-        RS512, // RSASSA-PKCS1-v1_5 using SHA-512
-        ES256, // ECDSA using P-256 and SHA-256 (Recommended)
-        ES256K,
-        ES384, // ECDSA using P-384 and SHA-384
-        ES512, // ECDSA using P-521 and SHA-512
-        PS256, // RSASSA-PSS using SHA-256 and MGF1 with SHA-256
-        PS384,
-        PS512,
-        EdDSA,
-    }
-
-    companion object {
-
-        @JvmStatic
-        fun jwtAlgorithm(name: String): JwtAlgorithm? = hmacAlgorithm(name) ?: digSigAlgorithm(name)
-
-        private fun hmacAlgorithm(name: String): Hmac? = Hmac.entries.find { it.name == name }
-
-        private fun digSigAlgorithm(name: String): DigSig? = DigSig.entries.find { it.name == name }
-    }
-}
-
-/**
- * https://w3c-ccg.github.io/ld-cryptosuite-registry/
- */
-enum class LdpProof {
-    Ed25519Signature2018,
-    RsaSignature2018,
-    RsaVerificationKey2018,
-    EcdsaSecp256k1Signature2019,
-    EcdsaSecp256k1VerificationKey2019,
-    EcdsaSecp256k1RecoverySignature2020,
-    EcdsaSecp256k1RecoveryMethod2020,
-    JsonWebSignature2020,
-    JwsVerificationKey2020,
-    GpgSignature2020,
-    GpgVerificationKey2020,
-    JcsEd25519Signature2020,
-    JcsEd25519Key2020,
-    BbsBlsSignature2020,
-    BbsBlsSignatureProof2020,
-    Bls12381G1Key2020,
-    Bls12381G2Key2020,
-}
-
-@Serializable(with = ClaimFormatSerializer::class)
-sealed interface ClaimFormat : java.io.Serializable {
-
-    data object MsoMdoc : ClaimFormat {
-        private fun readResolve(): Any = MsoMdoc
-    }
-
-    enum class JwtType : ClaimFormat {
-        JWT,
-        JWT_VC,
-        JWT_VP,
-    }
-
-    enum class LdpType : ClaimFormat {
-        LDP,
-        LDP_VC,
-        LDP_VP,
-    }
-}
-
-sealed interface SupportedClaimFormat<CF : ClaimFormat> : java.io.Serializable {
-
-    val type: CF
-
-    data class JwtBased(override val type: ClaimFormat.JwtType, val algorithms: Set<JwtAlgorithm>) :
-        SupportedClaimFormat<ClaimFormat.JwtType> {
-            init {
-                require(algorithms.isNotEmpty())
-            }
-        }
-
-    data class MsoMdoc(val algorithms: Set<JwtAlgorithm>) : SupportedClaimFormat<ClaimFormat.MsoMdoc> {
-        override val type: ClaimFormat.MsoMdoc
-            get() = ClaimFormat.MsoMdoc
-    }
-
-    data class LdpBased(override val type: ClaimFormat.LdpType, val proofTypes: Set<LdpProof>) :
-        SupportedClaimFormat<ClaimFormat.LdpType> {
-            init {
-                require(proofTypes.isNotEmpty())
-            }
-        }
-
-    companion object {
-        internal fun supportedClaimFormat(
-            type: ClaimFormat,
-            algorithms: Set<JwtAlgorithm>? = null,
-            proofTypes: Set<LdpProof>? = null,
-        ): SupportedClaimFormat<*>? = when (type) {
-            is ClaimFormat.JwtType -> jwt(type, algorithms)
-            is ClaimFormat.LdpType -> ldp(type, proofTypes)
-            is ClaimFormat.MsoMdoc -> msoMdoc(algorithms)
-        }
-
-        @JvmStatic
-        fun ldp(
-            type: ClaimFormat.LdpType,
-            proofTypes: Set<LdpProof>?,
-        ) = if (!proofTypes.isNullOrEmpty()) LdpBased(type, proofTypes) else null
-
-        @JvmStatic
-        fun jwt(
-            type: ClaimFormat.JwtType,
-            algorithms: Set<JwtAlgorithm>?,
-        ): JwtBased? = if (!algorithms.isNullOrEmpty()) JwtBased(type, algorithms) else null
-
-        @JvmStatic
-        fun msoMdoc(
-            algorithms: Set<JwtAlgorithm>?,
-        ): MsoMdoc? = if (!algorithms.isNullOrEmpty()) MsoMdoc(algorithms) else null
-    }
-}
-
 @Serializable(with = FormatSerializer::class)
-data class Format(val supportedClaimFormats: List<SupportedClaimFormat<*>> = emptyList()) : java.io.Serializable {
+@JvmInline
+value class Format private constructor(val json: String) : java.io.Serializable {
+
+    fun jsonObject(): JsonObject = JsonSupport.parseToJsonElement(json).jsonObject
+
     companion object {
-        fun invoke(supportedClaimFormat: SupportedClaimFormat<*>, vararg other: SupportedClaimFormat<*>): Format =
-            Format(listOf(supportedClaimFormat).plus(other.toList()))
+        fun format(json: JsonObject): Format = Format(JsonSupport.encodeToString(json))
     }
 }
 
@@ -398,7 +265,7 @@ data class PresentationDefinition(
 @Serializable
 data class DescriptorMap(
     @Required val id: InputDescriptorId,
-    @Required val format: ClaimFormat,
+    @Required val format: String,
     @Required val path: JsonPath,
 ) : java.io.Serializable
 

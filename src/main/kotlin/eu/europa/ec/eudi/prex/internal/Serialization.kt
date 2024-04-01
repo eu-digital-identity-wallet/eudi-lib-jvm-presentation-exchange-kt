@@ -36,49 +36,19 @@ internal val JsonSupport: Json by lazy { Json { ignoreUnknownKeys = true } }
  * Json ser-de for [Format]
  *
  */
+@OptIn(ExperimentalSerializationApi::class)
 internal object FormatSerializer : KSerializer<Format> {
-
-    /**
-     * Internal class presenting - in Json - a set of [JwtAlgorithm] or a set of [LdpProof]
-     */
-    @Serializable
-    private data class AlgorithmsOrProofTypes
-        @OptIn(ExperimentalSerializationApi::class)
-        constructor(
-            @EncodeDefault(EncodeDefault.Mode.NEVER)
-            @SerialName("alg")
-            val algorithms: Set<JwtAlgorithm>? = null,
-            @EncodeDefault(EncodeDefault.Mode.NEVER)
-            @SerialName("proof_type")
-            val proofTypes: Set<LdpProof>? = null,
-        )
-
-    /**
-     * Json representation of a [Format]. It will be mapped into a map
-     * having as key entry a [ClaimFormat] and as value [AlgorithmsOrProofTypes]
-     */
-    private val delegateSerializer = serializer<Map<ClaimFormat, AlgorithmsOrProofTypes>>()
-
-    @OptIn(ExperimentalSerializationApi::class)
-    override val descriptor = SerialDescriptor("Format", delegateSerializer.descriptor)
+    private val delegateSerializer = serializer<JsonObject>()
+    override val descriptor: SerialDescriptor
+        get() = SerialDescriptor("Format", delegateSerializer.descriptor)
 
     override fun deserialize(decoder: Decoder): Format {
-        return decoder.decodeSerializableValue(delegateSerializer).map {
-            val name = it.key
-            val (algorithms, proofTypes) = it.value
-            SupportedClaimFormat.supportedClaimFormat(name, algorithms, proofTypes)
-                ?: throw SerializationException("Invalid definition of $name. Misses alg or proof_type")
-        }.let { Format(it) }
+        val data = decoder.decodeSerializableValue(delegateSerializer)
+        return Format.format(data)
     }
 
     override fun serialize(encoder: Encoder, value: Format) {
-        val data = value.supportedClaimFormats.associate {
-            it.type to when (it) {
-                is SupportedClaimFormat.JwtBased -> AlgorithmsOrProofTypes(algorithms = it.algorithms)
-                is SupportedClaimFormat.LdpBased -> AlgorithmsOrProofTypes(proofTypes = it.proofTypes)
-                is SupportedClaimFormat.MsoMdoc -> AlgorithmsOrProofTypes(algorithms = it.algorithms)
-            }
-        }
+        val data = value.jsonObject()
         encoder.encodeSerializableValue(delegateSerializer, data)
     }
 }
@@ -125,62 +95,6 @@ internal object ConstraintsSerializer : KSerializer<Constraints> {
         val ldStr = value.limitDisclosure()?.jsonName
         val constraintJson = ConstraintsJson(value.fields(), ldStr)
         delegateSerializer.serialize(encoder, constraintJson)
-    }
-}
-
-/**
- * Json ser-de for [JwtAlgorithm]
- */
-internal object JwtAlgorithmSerializer : KSerializer<JwtAlgorithm> {
-
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("JwtAlgorithm", PrimitiveKind.STRING)
-
-    override fun serialize(encoder: Encoder, value: JwtAlgorithm) {
-        encoder.encodeString(value.name)
-    }
-
-    override fun deserialize(decoder: Decoder): JwtAlgorithm {
-        val name: String = decoder.decodeString()
-        return JwtAlgorithm.jwtAlgorithm(name) ?: throw SerializationException("Not a valid JwtAlgorithm $name")
-    }
-}
-
-/**
- * Json ser-de for [ClaimFormat]
- */
-internal object ClaimFormatSerializer : KSerializer<ClaimFormat> {
-
-    override val descriptor: SerialDescriptor
-        get() = PrimitiveSerialDescriptor("ClaimFormatType", PrimitiveKind.STRING)
-
-    override fun deserialize(decoder: Decoder): ClaimFormat {
-        val value = decoder.decodeString()
-        return claimFormaType(value) ?: throw SerializationException("Unsupported value $value")
-    }
-
-    override fun serialize(encoder: Encoder, value: ClaimFormat) {
-        encoder.encodeString(value.asString())
-    }
-
-    private fun claimFormaType(name: String): ClaimFormat? = when (name) {
-        "jwt" -> ClaimFormat.JwtType.JWT
-        "jwt_vc" -> ClaimFormat.JwtType.JWT_VC
-        "jwt_vp" -> ClaimFormat.JwtType.JWT_VP
-        "ldp" -> ClaimFormat.LdpType.LDP
-        "ldp_vc" -> ClaimFormat.LdpType.LDP_VC
-        "ldp_vp" -> ClaimFormat.LdpType.LDP_VP
-        "mso_mdoc" -> ClaimFormat.MsoMdoc
-        else -> null
-    }
-
-    private fun ClaimFormat.asString() = when (this) {
-        ClaimFormat.JwtType.JWT -> "jwt"
-        ClaimFormat.JwtType.JWT_VC -> "jwt_vc"
-        ClaimFormat.JwtType.JWT_VP -> "jwt_vp"
-        ClaimFormat.LdpType.LDP -> "ldp"
-        ClaimFormat.LdpType.LDP_VC -> "ldp_vc"
-        ClaimFormat.LdpType.LDP_VP -> "ldp_vp"
-        ClaimFormat.MsoMdoc -> "mso_mdoc"
     }
 }
 

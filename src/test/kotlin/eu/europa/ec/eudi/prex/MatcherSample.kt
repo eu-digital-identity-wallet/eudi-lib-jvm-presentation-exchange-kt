@@ -76,7 +76,7 @@ private fun printResult(match: Match) {
 
 val bankAccount = SimpleClaim(
     uniqueId = "bankAccountClaim",
-    format = ClaimFormat.LdpType.LDP,
+    format = "ldp",
     value = buildJsonObject {
         putJsonObject("vc") {
             put("issuer", "did:example:123")
@@ -88,7 +88,7 @@ val bankAccount = SimpleClaim(
 )
 val passport = SimpleClaim(
     uniqueId = "samplePassport",
-    format = ClaimFormat.LdpType.LDP,
+    format = "ldp",
     value = buildJsonObject {
         putJsonObject("credentialSchema") {
             put("id", "hub://did:foo:123/Collections/schema.us.gov/passport.json")
@@ -99,7 +99,7 @@ val passport = SimpleClaim(
     },
 )
 
-data class SimpleClaim(override val uniqueId: String, override val format: ClaimFormat, private val value: JsonObject) :
+data class SimpleClaim(override val uniqueId: String, override val format: String, private val value: JsonObject) :
     Claim {
         override fun asJsonString(): String = value.toString()
     }
