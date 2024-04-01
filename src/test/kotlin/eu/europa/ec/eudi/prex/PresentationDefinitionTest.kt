@@ -15,9 +15,9 @@
  */
 package eu.europa.ec.eudi.prex
 
-import org.junit.jupiter.api.fail
 import java.io.InputStream
 import kotlin.test.Test
+import kotlin.test.fail
 
 class PresentationDefinitionTest {
 
@@ -29,6 +29,11 @@ class PresentationDefinitionTest {
     @Test
     fun `basic example`() {
         testParseDefinition("v2.0.0/presentation-definition/basic_example.json")
+    }
+
+    @Test
+    fun `SD-JWT VC`() {
+        testParseDefinition("v2.0.0/presentation-definition/pd_sd_jwt_vc.json")
     }
 
     @Test
@@ -52,17 +57,10 @@ class PresentationDefinitionTest {
         }
     }
 
-    @Test
-    fun `fi example`() {
-        testParseDefinition("v2.0.0/presentation-definition/fi.json").also {
-            it.submissionRequirements?.forEach { x -> println(x) }
-        }
-    }
-
     private fun testParseDefinition(f: String): PresentationDefinition =
         PresentationExchange.jsonParser.decodePresentationDefinition(load(f)!!)
             .also { println(it) }
-            .fold(onSuccess = { it }, onFailure = { fail(it) })
+            .fold(onSuccess = { it }, onFailure = { fail(it.message, it) })
 
     private fun load(f: String): InputStream? =
         PresentationDefinitionTest::class.java.classLoader.getResourceAsStream(f)

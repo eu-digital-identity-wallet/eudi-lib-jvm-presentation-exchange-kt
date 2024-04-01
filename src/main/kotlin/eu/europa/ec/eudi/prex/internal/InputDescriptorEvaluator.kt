@@ -53,7 +53,7 @@ internal object InputDescriptorEvaluator {
     private fun evaluate(
         presentationDefinitionFormat: Format?,
         inputDescriptor: InputDescriptor,
-        claimFormat: ClaimFormat,
+        claimFormat: Format,
         claimJsonString: String,
     ): InputDescriptorEvaluation {
         val supportedFormat = isFormatSupported(inputDescriptor, presentationDefinitionFormat, claimFormat)
@@ -67,12 +67,12 @@ internal object InputDescriptorEvaluator {
     private fun isFormatSupported(
         inputDescriptor: InputDescriptor,
         presentationDefinitionFormat: Format?,
-        claimFormat: ClaimFormat,
-    ): Boolean =
-        (inputDescriptor.format ?: presentationDefinitionFormat)
-            ?.supportedClaimFormats
-            ?.map { it.type }
-            ?.contains(claimFormat) ?: true
+        claimFormat: Format,
+    ): Boolean {
+        val supportedClaimFormats = (inputDescriptor.format ?: presentationDefinitionFormat)?.jsonObject()?.keys ?: emptySet()
+        val claimFormats = claimFormat.jsonObject().keys
+        return supportedClaimFormats.isEmpty() || supportedClaimFormats.intersect(claimFormats).isNotEmpty()
+    }
 
     /**
      *
