@@ -89,7 +89,7 @@ typealias ClaimId = String
 
 interface Claim {
     val uniqueId: ClaimId
-    val format: String
+    val format: Format
     fun asJsonString(): String
 }
 
