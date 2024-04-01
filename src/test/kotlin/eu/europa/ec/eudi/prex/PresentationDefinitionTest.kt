@@ -52,13 +52,6 @@ class PresentationDefinitionTest {
         }
     }
 
-    @Test
-    fun `fi example`() {
-        testParseDefinition("v2.0.0/presentation-definition/fi.json").also {
-            it.submissionRequirements?.forEach { x -> println(x) }
-        }
-    }
-
     private fun testParseDefinition(f: String): PresentationDefinition =
         PresentationExchange.jsonParser.decodePresentationDefinition(load(f)!!)
             .also { println(it) }

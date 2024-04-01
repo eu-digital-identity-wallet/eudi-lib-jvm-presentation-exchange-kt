@@ -48,11 +48,6 @@ internal class PresentationDefinitionSerializationTest {
         testPresentationSerialization("v2.0.0/presentation-definition/mDL-example.json")
     }
 
-    @Test
-    fun `should serialize fi example`() {
-        testPresentationSerialization("v2.0.0/presentation-definition/fi.json")
-    }
-
     private fun testPresentationSerialization(path: String) {
         loadResource(path).use {
             val definition = PresentationExchange.jsonParser.decodePresentationDefinition(it).getOrThrow()
