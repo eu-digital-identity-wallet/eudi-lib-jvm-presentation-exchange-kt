@@ -1,5 +1,6 @@
 import org.jetbrains.dokka.DokkaConfiguration.Visibility
 import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.owasp.dependencycheck.gradle.extension.DependencyCheckExtension
 import java.net.URL
 
@@ -33,14 +34,16 @@ dependencies {
 }
 
 java {
-    val javaVersion = libs.versions.java.get()
-    sourceCompatibility = JavaVersion.toVersion(javaVersion)
+    sourceCompatibility = JavaVersion.toVersion(libs.versions.java.get())
 }
 
 kotlin {
     jvmToolchain {
-        val javaVersion = libs.versions.java.get()
-        languageVersion.set(JavaLanguageVersion.of(javaVersion))
+        languageVersion = JavaLanguageVersion.of(libs.versions.java.get())
+        vendor = JvmVendorSpec.ADOPTIUM
+    }
+    compilerOptions {
+        apiVersion = KotlinVersion.KOTLIN_2_0
     }
 }
 
