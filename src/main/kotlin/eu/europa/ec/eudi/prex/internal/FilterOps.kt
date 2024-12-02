@@ -16,6 +16,7 @@
 package eu.europa.ec.eudi.prex.internal
 
 import eu.europa.ec.eudi.prex.Filter
+import io.kjson.pointer.JSONPointer
 import net.pwall.json.schema.JSONSchema
 
 internal object FilterOps {
@@ -28,6 +29,6 @@ internal object FilterOps {
 
     private fun isValid(f: Filter, j: String): Boolean {
         val jsonSchema = JSONSchema.parse(f.json)
-        return jsonSchema.validate(j, net.pwall.json.pointer.JSONPointer.root)
+        return jsonSchema.validate(j, JSONPointer.root)
     }
 }

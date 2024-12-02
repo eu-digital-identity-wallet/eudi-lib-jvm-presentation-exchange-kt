@@ -7,7 +7,7 @@ kotlinxSerialization = "1.7.3"
 ktlint = "0.50.0"
 sonarqube = "5.0.0.4638"
 dependencycheck = "10.0.3"
-jsonKotlinSchema = "0.47"
+jsonKotlinSchema = "0.52"
 jsonpathkt = "2.0.1"
 mavenPublish = "0.28.0"
 
