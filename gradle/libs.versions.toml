@@ -3,13 +3,13 @@ dokka = "1.9.20"
 kotlin = "2.0.21"
 spotless = "6.25.0"
 java = "17"
-kotlinxSerialization = "1.6.1"
+kotlinxSerialization = "1.7.3"
 ktlint = "0.50.0"
 sonarqube = "5.0.0.4638"
 dependencycheck = "10.0.3"
 jsonKotlinSchema = "0.47"
-jsonpathkt="2.0.1"
-mavenPublish="0.28.0"
+jsonpathkt = "2.0.1"
+mavenPublish = "0.28.0"
 
 [libraries]
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
@@ -23,4 +23,4 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-plugin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 dependencycheck = { id = "org.owasp.dependencycheck", version.ref = "dependencycheck" }
 sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
-maven-publish = { id = "com.vanniktech.maven.publish", version.ref="mavenPublish" }
+maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
