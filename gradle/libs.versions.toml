@@ -1,12 +1,9 @@
 [versions]
-coroutines = "1.7.3"
 dokka = "1.9.20"
 kotlin = "2.0.21"
-foojay = "0.8.0"
 spotless = "6.25.0"
 java = "17"
 kotlinxSerialization = "1.6.1"
-nimbusJoseJwt = "9.37.3"
 ktlint = "0.50.0"
 sonarqube = "5.0.0.4638"
 dependencycheck = "10.0.3"
@@ -16,12 +13,10 @@ mavenPublish="0.28.0"
 
 [libraries]
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
-nimbus-jose-jwt = { module = "com.nimbusds:nimbus-jose-jwt", version.ref = "nimbusJoseJwt" }
 json-kotlin-schema = { module = "net.pwall.json:json-kotlin-schema", version.ref = "jsonKotlinSchema" }
 jsonpathkt = { module = "com.nfeld.jsonpathkt:jsonpathkt", version.ref = "jsonpathkt" }
 
 [plugins]
-foojay-resolver-convention = { id = "org.gradle.toolchains.foojay-resolver-convention", version.ref = "foojay" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
