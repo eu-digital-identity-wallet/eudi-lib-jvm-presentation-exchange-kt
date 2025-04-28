@@ -15,7 +15,8 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.plugin.serialization)
     alias(libs.plugins.spotless)
-    alias(libs.plugins.sonarqube)
+    alias(libs.plugins.sonarqube) //This will have to be deleted
+    alias(libs.plugins.kover)
     alias(libs.plugins.dependencycheck)
     alias(libs.plugins.maven.publish)
 }

@@ -8,11 +8,12 @@ java = "17"
 kotlinxSerialization = "1.6.1"
 nimbusJoseJwt = "9.37.3"
 ktlint = "0.50.0"
-sonarqube = "5.0.0.4638"
+sonarqube = "5.0.0.4638"  #This will have to be deleted
 dependencycheck = "10.0.3"
 jsonKotlinSchema = "0.47"
 jsonpathkt="2.0.1"
 mavenPublish="0.28.0"
+kover = "0.9.1"
 
 [libraries]
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
@@ -27,5 +28,6 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-plugin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 dependencycheck = { id = "org.owasp.dependencycheck", version.ref = "dependencycheck" }
-sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
+sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" } #This will have to be deleted
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 maven-publish = { id = "com.vanniktech.maven.publish", version.ref="mavenPublish" }
