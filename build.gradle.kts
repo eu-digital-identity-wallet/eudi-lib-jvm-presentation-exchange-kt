@@ -10,7 +10,6 @@ object Meta {
 plugins {
     base
     `java-library`
-    jacoco
     alias(libs.plugins.dokka)
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.plugin.serialization)
@@ -87,12 +86,6 @@ tasks.withType<DokkaTask>().configureEach {
                     }
                 }
         }
-    }
-}
-
-tasks.jacocoTestReport {
-    reports {
-        xml.required.set(true)
     }
 }
 
