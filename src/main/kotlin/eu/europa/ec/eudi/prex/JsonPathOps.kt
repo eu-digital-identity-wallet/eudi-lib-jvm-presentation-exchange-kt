@@ -15,8 +15,8 @@
  */
 package eu.europa.ec.eudi.prex
 
-import com.fasterxml.jackson.databind.JsonNode as JacksonJsonNode
-import com.fasterxml.jackson.databind.ObjectMapper as JacksonObjectMapper
+import com.nfeld.jsonpathkt.kotlinx.resolveOrNull
+import kotlinx.serialization.json.Json
 import com.nfeld.jsonpathkt.JsonPath as ExternalJsonPath
 
 /**
@@ -34,18 +34,12 @@ internal object JsonPathOps {
      * at [path][jsonPath]. Returns the value found at the path, if found
      */
     internal fun getJsonAtPath(jsonPath: JsonPath, jsonString: String): String? =
-        ExternalJsonPath(jsonPath.value)
-            .readFromJson<JacksonJsonNode>(jsonString)
-            ?.toJsonString()
+        ExternalJsonPath
+            .compile(jsonPath.value)
+            .resolveOrNull(Json.parseToJsonElement(jsonString))
+            .toString()
 
-    private fun String.toJsonPath(): Result<com.nfeld.jsonpathkt.JsonPath> = runCatching {
-        ExternalJsonPath(this)
+    private fun String.toJsonPath(): Result<ExternalJsonPath> = runCatching {
+        ExternalJsonPath.compile(this)
     }
-
-    private fun JacksonJsonNode.toJsonString(): String = objectMapper.writeValueAsString(this)
-
-    /**
-     * Jackson JSON support
-     */
-    private val objectMapper: JacksonObjectMapper by lazy { JacksonObjectMapper() }
 }

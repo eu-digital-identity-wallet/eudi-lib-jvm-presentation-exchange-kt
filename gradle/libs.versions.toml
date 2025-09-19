@@ -10,7 +10,7 @@ nimbusJoseJwt = "9.37.3"
 ktlint = "0.50.0"
 dependencycheck = "12.1.1"
 jsonKotlinSchema = "0.47"
-jsonpathkt="2.0.1"
+jsonpathkt="3.0.2"
 mavenPublish="0.32.0"
 kover = "0.9.1"
 
@@ -18,7 +18,7 @@ kover = "0.9.1"
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 nimbus-jose-jwt = { module = "com.nimbusds:nimbus-jose-jwt", version.ref = "nimbusJoseJwt" }
 json-kotlin-schema = { module = "net.pwall.json:json-kotlin-schema", version.ref = "jsonKotlinSchema" }
-jsonpathkt = { module = "com.nfeld.jsonpathkt:jsonpathkt", version.ref = "jsonpathkt" }
+jsonpathkt = { module = "com.eygraber:jsonpathkt-kotlinx", version.ref = "jsonpathkt" }
 
 [plugins]
 foojay-resolver-convention = { id = "org.gradle.toolchains.foojay-resolver-convention", version.ref = "foojay" }
