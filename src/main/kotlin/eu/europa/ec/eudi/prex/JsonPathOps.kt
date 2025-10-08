@@ -16,7 +16,8 @@
 package eu.europa.ec.eudi.prex
 
 import com.nfeld.jsonpathkt.kotlinx.resolveOrNull
-import kotlinx.serialization.json.Json
+import eu.europa.ec.eudi.prex.internal.JsonSupport
+import kotlinx.serialization.encodeToString
 import com.nfeld.jsonpathkt.JsonPath as ExternalJsonPath
 
 /**
@@ -36,8 +37,8 @@ internal object JsonPathOps {
     internal fun getJsonAtPath(jsonPath: JsonPath, jsonString: String): String? =
         ExternalJsonPath
             .compile(jsonPath.value)
-            .resolveOrNull(Json.parseToJsonElement(jsonString))
-            .toString()
+            .resolveOrNull(JsonSupport.parseToJsonElement(jsonString))
+            .toString().let { JsonSupport.encodeToString(it) }
 
     private fun String.toJsonPath(): Result<ExternalJsonPath> = runCatching {
         ExternalJsonPath.compile(this)
