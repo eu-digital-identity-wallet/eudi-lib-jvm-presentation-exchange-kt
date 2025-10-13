@@ -1,6 +1,6 @@
 import org.jetbrains.dokka.DokkaConfiguration.Visibility
 import org.jetbrains.dokka.gradle.DokkaTask
-import org.owasp.dependencycheck.gradle.extension.DependencyCheckExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import java.net.URL
 
 object Meta {
@@ -8,20 +8,17 @@ object Meta {
 }
 
 plugins {
-    base
-    `java-library`
-    alias(libs.plugins.dokka)
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.plugin.serialization)
     alias(libs.plugins.spotless)
     alias(libs.plugins.kover)
-    alias(libs.plugins.dependencycheck)
+    alias(libs.plugins.dokka)
     alias(libs.plugins.maven.publish)
+    alias(libs.plugins.dependencycheck)
 }
 
 repositories {
     mavenCentral()
-    mavenLocal()
 }
 
 dependencies {
@@ -31,24 +28,21 @@ dependencies {
     testImplementation(kotlin("test"))
 }
 
-java {
-    val javaVersion = libs.versions.java.get()
-    sourceCompatibility = JavaVersion.toVersion(javaVersion)
-}
-
 kotlin {
+    compilerOptions {
+        apiVersion = KotlinVersion.DEFAULT
+        languageVersion = KotlinVersion.DEFAULT
+    }
+
     jvmToolchain {
-        val javaVersion = libs.versions.java.get()
-        languageVersion.set(JavaLanguageVersion.of(javaVersion))
+        languageVersion = JavaLanguageVersion.of(libs.versions.java.get())
+        vendor = JvmVendorSpec.ADOPTIUM
+        implementation = JvmImplementation.VENDOR_SPECIFIC
     }
 }
 
-testing {
-    suites {
-        val test by getting(JvmTestSuite::class) {
-            useJUnitJupiter()
-        }
-    }
+tasks.test {
+    useJUnitPlatform()
 }
 
 tasks.jar {
@@ -109,9 +103,10 @@ mavenPublishing {
     }
 }
 
-val nvdApiKey: String? = System.getenv("NVD_API_KEY") ?: properties["nvdApiKey"]?.toString()
-val dependencyCheckExtension = extensions.findByType(DependencyCheckExtension::class.java)
-dependencyCheckExtension?.apply {
-    formats = mutableListOf("XML", "HTML")
-    nvd.apiKey = nvdApiKey ?: ""
+dependencyCheck {
+    formats = listOf("XML", "HTML")
+
+    nvd {
+        apiKey = System.getenv("NVD_API_KEY") ?: properties["nvdApiKey"]?.toString()
+    }
 }
