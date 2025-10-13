@@ -12,7 +12,11 @@ mavenPublish = "0.32.0"
 kover = "0.9.1"
 
 [libraries]
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
+kotlinx-serialization-bom = { module = "org.jetbrains.kotlinx:kotlinx-serialization-bom", version.ref = "kotlinxSerialization" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json" }
 json-kotlin-schema = { module = "net.pwall.json:json-kotlin-schema", version.ref = "jsonKotlinSchema" }
 jsonpathkt = { module = "com.eygraber:jsonpathkt-kotlinx", version.ref = "jsonpathkt" }
 

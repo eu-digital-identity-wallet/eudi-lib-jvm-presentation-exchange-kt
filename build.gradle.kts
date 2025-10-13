@@ -1,7 +1,7 @@
 import org.jetbrains.dokka.DokkaConfiguration.Visibility
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import java.net.URL
+import java.net.URI
 
 object Meta {
     const val BASE_URL = "https://github.com/eu-digital-identity-wallet/eudi-lib-jvm-presentation-exchange-kt"
@@ -22,10 +22,13 @@ repositories {
 }
 
 dependencies {
+    implementation(platform(libs.kotlin.bom))
+    implementation(libs.kotlin.stdlib)
+    api(platform(libs.kotlinx.serialization.bom))
     api(libs.kotlinx.serialization.json)
     implementation(libs.jsonpathkt)
     implementation(libs.json.kotlin.schema)
-    testImplementation(kotlin("test"))
+    testImplementation(libs.kotlin.test)
 }
 
 kotlin {
@@ -70,7 +73,7 @@ tasks.withType<DokkaTask>().configureEach {
 
             documentedVisibilities.set(setOf(Visibility.PUBLIC, Visibility.PROTECTED))
 
-            val remoteSourceUrl = System.getenv()["GIT_REF_NAME"]?.let { URL("${Meta.BASE_URL}/tree/$it/src") }
+            val remoteSourceUrl = System.getenv()["GIT_REF_NAME"]?.let { URI.create("${Meta.BASE_URL}/tree/$it/src").toURL() }
             remoteSourceUrl
                 ?.let {
                     sourceLink {
