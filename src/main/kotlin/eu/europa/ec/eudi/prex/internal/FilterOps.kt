@@ -28,6 +28,6 @@ internal object FilterOps {
 
     private fun isValid(f: Filter, j: String): Boolean {
         val jsonSchema = JSONSchema.parse(f.json)
-        return jsonSchema.validate(j, net.pwall.json.pointer.JSONPointer.root)
+        return jsonSchema.validate(j, io.kjson.pointer.JSONPointer.root)
     }
 }
