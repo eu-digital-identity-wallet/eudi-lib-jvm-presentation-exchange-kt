@@ -9,7 +9,7 @@ dependencycheck = "12.1.1"
 jsonKotlinSchema = "0.57"
 jsonpathkt = "3.0.2"
 mavenPublish = "0.32.0"
-kover = "0.9.1"
+kover = "0.9.2"
 
 [libraries]
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
