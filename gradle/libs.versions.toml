@@ -1,31 +1,30 @@
 [versions]
-coroutines = "1.7.3"
 dokka = "1.9.20"
-kotlin = "1.9.21"
-foojay = "0.8.0"
+kotlin = "2.1.21"
 spotless = "6.25.0"
 java = "17"
-kotlinxSerialization = "1.6.1"
-nimbusJoseJwt = "9.37.3"
+kotlinxSerialization = "1.8.1"
 ktlint = "0.50.0"
 dependencycheck = "12.1.1"
 jsonKotlinSchema = "0.47"
-jsonpathkt="3.0.2"
-mavenPublish="0.32.0"
+jsonpathkt = "3.0.2"
+mavenPublish = "0.32.0"
 kover = "0.9.1"
 
 [libraries]
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
-nimbus-jose-jwt = { module = "com.nimbusds:nimbus-jose-jwt", version.ref = "nimbusJoseJwt" }
+kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
+kotlinx-serialization-bom = { module = "org.jetbrains.kotlinx:kotlinx-serialization-bom", version.ref = "kotlinxSerialization" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json" }
 json-kotlin-schema = { module = "net.pwall.json:json-kotlin-schema", version.ref = "jsonKotlinSchema" }
 jsonpathkt = { module = "com.eygraber:jsonpathkt-kotlinx", version.ref = "jsonpathkt" }
 
 [plugins]
-foojay-resolver-convention = { id = "org.gradle.toolchains.foojay-resolver-convention", version.ref = "foojay" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-plugin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 dependencycheck = { id = "org.owasp.dependencycheck", version.ref = "dependencycheck" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
-maven-publish = { id = "com.vanniktech.maven.publish", version.ref="mavenPublish" }
+maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }

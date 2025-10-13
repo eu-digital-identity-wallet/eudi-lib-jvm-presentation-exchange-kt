@@ -1,54 +1,51 @@
 import org.jetbrains.dokka.DokkaConfiguration.Visibility
 import org.jetbrains.dokka.gradle.DokkaTask
-import org.owasp.dependencycheck.gradle.extension.DependencyCheckExtension
-import java.net.URL
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import java.net.URI
 
 object Meta {
     const val BASE_URL = "https://github.com/eu-digital-identity-wallet/eudi-lib-jvm-presentation-exchange-kt"
 }
 
 plugins {
-    base
-    `java-library`
-    alias(libs.plugins.dokka)
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.plugin.serialization)
     alias(libs.plugins.spotless)
     alias(libs.plugins.kover)
-    alias(libs.plugins.dependencycheck)
+    alias(libs.plugins.dokka)
     alias(libs.plugins.maven.publish)
+    alias(libs.plugins.dependencycheck)
 }
 
 repositories {
     mavenCentral()
-    mavenLocal()
 }
 
 dependencies {
+    implementation(platform(libs.kotlin.bom))
+    implementation(libs.kotlin.stdlib)
+    api(platform(libs.kotlinx.serialization.bom))
     api(libs.kotlinx.serialization.json)
     implementation(libs.jsonpathkt)
     implementation(libs.json.kotlin.schema)
-    testImplementation(kotlin("test"))
-}
-
-java {
-    val javaVersion = libs.versions.java.get()
-    sourceCompatibility = JavaVersion.toVersion(javaVersion)
+    testImplementation(libs.kotlin.test)
 }
 
 kotlin {
+    compilerOptions {
+        apiVersion = KotlinVersion.DEFAULT
+        languageVersion = KotlinVersion.DEFAULT
+    }
+
     jvmToolchain {
-        val javaVersion = libs.versions.java.get()
-        languageVersion.set(JavaLanguageVersion.of(javaVersion))
+        languageVersion = JavaLanguageVersion.of(libs.versions.java.get())
+        vendor = JvmVendorSpec.ADOPTIUM
+        implementation = JvmImplementation.VENDOR_SPECIFIC
     }
 }
 
-testing {
-    suites {
-        val test by getting(JvmTestSuite::class) {
-            useJUnitJupiter()
-        }
-    }
+tasks.test {
+    useJUnitPlatform()
 }
 
 tasks.jar {
@@ -76,7 +73,7 @@ tasks.withType<DokkaTask>().configureEach {
 
             documentedVisibilities.set(setOf(Visibility.PUBLIC, Visibility.PROTECTED))
 
-            val remoteSourceUrl = System.getenv()["GIT_REF_NAME"]?.let { URL("${Meta.BASE_URL}/tree/$it/src") }
+            val remoteSourceUrl = System.getenv()["GIT_REF_NAME"]?.let { URI.create("${Meta.BASE_URL}/tree/$it/src").toURL() }
             remoteSourceUrl
                 ?.let {
                     sourceLink {
@@ -109,9 +106,10 @@ mavenPublishing {
     }
 }
 
-val nvdApiKey: String? = System.getenv("NVD_API_KEY") ?: properties["nvdApiKey"]?.toString()
-val dependencyCheckExtension = extensions.findByType(DependencyCheckExtension::class.java)
-dependencyCheckExtension?.apply {
-    formats = mutableListOf("XML", "HTML")
-    nvd.apiKey = nvdApiKey ?: ""
+dependencyCheck {
+    formats = listOf("XML", "HTML")
+
+    nvd {
+        apiKey = System.getenv("NVD_API_KEY") ?: properties["nvdApiKey"]?.toString()
+    }
 }
