@@ -38,7 +38,7 @@ internal object JsonPathOps {
         ExternalJsonPath
             .compile(jsonPath.value)
             .resolveOrNull(JsonSupport.parseToJsonElement(jsonString))
-            .toString().let { JsonSupport.encodeToString(it) }
+            ?.let { JsonSupport.encodeToString(it) }
 
     private fun String.toJsonPath(): Result<ExternalJsonPath> = runCatching {
         ExternalJsonPath.compile(this)
