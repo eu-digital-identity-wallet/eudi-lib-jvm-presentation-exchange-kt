@@ -1,5 +1,5 @@
 [versions]
-dokka = "1.9.20"
+dokka = "2.1.0"
 kotlin = "2.1.21"
 spotless = "6.25.0"
 java = "17"
@@ -8,7 +8,7 @@ ktlint = "0.50.0"
 dependencycheck = "12.1.1"
 jsonKotlinSchema = "0.57"
 jsonpathkt = "3.0.2"
-mavenPublish = "0.32.0"
+mavenPublish = "0.34.0"
 kover = "0.9.2"
 
 [libraries]
