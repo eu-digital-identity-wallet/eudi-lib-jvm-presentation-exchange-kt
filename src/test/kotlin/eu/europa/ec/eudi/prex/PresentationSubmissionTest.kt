@@ -20,7 +20,6 @@ import kotlin.test.Test
 import kotlin.test.fail
 
 class PresentationSubmissionTest {
-
     private val parser = PresentationExchange.jsonParser
 
     @Test
@@ -34,10 +33,10 @@ class PresentationSubmissionTest {
     }
 
     private fun testParseDefinition(f: String): PresentationSubmission =
-        parser.decodePresentationSubmission(load(f)!!)
+        parser
+            .decodePresentationSubmission(load(f)!!)
             .also { println(it) }
             .fold(onSuccess = { it }, onFailure = { fail(it.message, it) })
 
-    private fun load(f: String): InputStream? =
-        PresentationDefinitionTest::class.java.classLoader.getResourceAsStream(f)
+    private fun load(f: String): InputStream? = PresentationDefinitionTest::class.java.classLoader.getResourceAsStream(f)
 }

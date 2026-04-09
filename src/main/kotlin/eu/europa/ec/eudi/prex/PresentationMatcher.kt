@@ -24,7 +24,6 @@ import eu.europa.ec.eudi.prex.InputDescriptorEvaluation.NotMatchedFieldConstrain
  * The outcome of applying a [FieldConstraint] to a claim.
  */
 sealed interface FieldQueryResult {
-
     /**
      * Indicates that a [FieldConstraint] is not satisfied by a claim
      */
@@ -41,13 +40,19 @@ sealed interface FieldQueryResult {
      * where the  Verifier asks from the wallet to evaluate a predicate
      */
     sealed interface CandidateField : FieldQueryResult {
-
         /**
          * Indicates that a [FieldConstraint] was satisfied by a claim because (the claim) it
          * contains at [path] an appropriate [content]
          */
-        data class Found(val path: JsonPath, val content: String) : CandidateField
-        data class PredicateEvaluated(val path: JsonPath, val predicateEvaluation: Boolean) : CandidateField
+        data class Found(
+            val path: JsonPath,
+            val content: String,
+        ) : CandidateField
+
+        data class PredicateEvaluated(
+            val path: JsonPath,
+            val predicateEvaluation: Boolean,
+        ) : CandidateField
 
         /**
          * Indicates that the claim doesn't contain a field as described in the [FieldConstraint]
@@ -63,11 +68,12 @@ sealed interface FieldQueryResult {
  * The outcome of evaluating an [InputDescriptor] against a [Claim]
  */
 sealed interface InputDescriptorEvaluation {
-
     /**
      * Indicates that claim is candidate, that is matches, the given [InputDescriptor]
      */
-    data class CandidateClaim(val matches: Map<FieldConstraint, CandidateField>) : InputDescriptorEvaluation {
+    data class CandidateClaim(
+        val matches: Map<FieldConstraint, CandidateField>,
+    ) : InputDescriptorEvaluation {
         init {
             require(matches.isNotEmpty())
         }
@@ -77,9 +83,11 @@ sealed interface InputDescriptorEvaluation {
      * Indicates that claim doesn't satisfy the constraints of the [InputDescriptor]
      */
     sealed interface NotMatchingClaim : InputDescriptorEvaluation
+
     data object NotMatchedFieldConstraints : NotMatchingClaim {
         private fun readResolve(): Any = NotMatchedFieldConstraints
     }
+
     data object UnsupportedFormat : NotMatchingClaim {
         private fun readResolve(): Any = UnsupportedFormat
     }
@@ -90,14 +98,20 @@ typealias ClaimId = String
 interface Claim {
     val uniqueId: ClaimId
     val format: Format
+
     fun asJsonString(): String
 }
 
 typealias InputDescriptorEvalPerClaim<A> = Map<InputDescriptorId, Map<ClaimId, A>>
 
 sealed interface Match {
-    data class Matched(val matches: InputDescriptorEvalPerClaim<CandidateClaim>) : Match
-    data class NotMatched(val details: InputDescriptorEvalPerClaim<NotMatchedFieldConstraints>) : Match
+    data class Matched(
+        val matches: InputDescriptorEvalPerClaim<CandidateClaim>,
+    ) : Match
+
+    data class NotMatched(
+        val details: InputDescriptorEvalPerClaim<NotMatchedFieldConstraints>,
+    ) : Match
 }
 
 /**
@@ -107,5 +121,8 @@ sealed interface Match {
  * @see <a href="https://identity.foundation/presentation-exchange/spec/v2.0.0/#input-evaluation">Input evaluation</a>
  */
 fun interface PresentationMatcher {
-    fun match(pd: PresentationDefinition, claims: List<Claim>): Match
+    fun match(
+        pd: PresentationDefinition,
+        claims: List<Claim>,
+    ): Match
 }

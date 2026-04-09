@@ -27,22 +27,29 @@ import kotlinx.serialization.json.jsonObject
 
 @Serializable
 @JvmInline
-value class Id(val value: String) : java.io.Serializable
+value class Id(
+    val value: String,
+) : java.io.Serializable
 
 @Serializable
 @JvmInline
-value class Name(val value: String) : java.io.Serializable
+value class Name(
+    val value: String,
+) : java.io.Serializable
 
 @Serializable
 @JvmInline
-value class Purpose(val value: String) : java.io.Serializable
+value class Purpose(
+    val value: String,
+) : java.io.Serializable
 
 typealias NonEmptySet<T> = List<T>
 
 @Serializable(with = FormatSerializer::class)
 @JvmInline
-value class Format private constructor(val json: String) : java.io.Serializable {
-
+value class Format private constructor(
+    val json: String,
+) : java.io.Serializable {
     fun jsonObject(): JsonObject = JsonSupport.parseToJsonElement(json).jsonObject
 
     companion object {
@@ -55,8 +62,9 @@ value class Format private constructor(val json: String) : java.io.Serializable 
  */
 @Serializable(with = JsonPathSerializer::class)
 @JvmInline
-value class JsonPath private constructor(val value: String) : java.io.Serializable {
-
+value class JsonPath private constructor(
+    val value: String,
+) : java.io.Serializable {
     companion object {
         fun jsonPath(s: String): JsonPath? = if (JsonPathOps.isValid(s)) JsonPath(s) else null
     }
@@ -68,7 +76,9 @@ value class JsonPath private constructor(val value: String) : java.io.Serializab
  */
 @Serializable(with = FilterSerializer::class)
 @JvmInline
-value class Filter private constructor(val json: String) : java.io.Serializable {
+value class Filter private constructor(
+    val json: String,
+) : java.io.Serializable {
     fun jsonObject(): JsonObject = JsonSupport.parseToJsonElement(json).jsonObject
 
     companion object {
@@ -95,22 +105,26 @@ data class FieldConstraint(
 
 @Serializable(with = ConstraintsSerializer::class)
 sealed interface Constraints : java.io.Serializable {
-    fun fields(): List<FieldConstraint> = when (this) {
-        is Fields -> fieldConstraints
-        is FieldsAndDisclosure -> fieldConstraints
-        else -> emptyList()
-    }
+    fun fields(): List<FieldConstraint> =
+        when (this) {
+            is Fields -> fieldConstraints
+            is FieldsAndDisclosure -> fieldConstraints
+            else -> emptyList()
+        }
 
-    fun limitDisclosure(): LimitDisclosure? = when (this) {
-        is LimitDisclosure -> this
-        is FieldsAndDisclosure -> limitDisclosure
-        else -> null
-    }
+    fun limitDisclosure(): LimitDisclosure? =
+        when (this) {
+            is LimitDisclosure -> this
+            is FieldsAndDisclosure -> limitDisclosure
+            else -> null
+        }
 
     /**
      * Conformant Consumer MAY submit a response that contains more than the data described in the fields array.
      */
-    data class Fields(val fieldConstraints: NonEmptySet<FieldConstraint>) : Constraints {
+    data class Fields(
+        val fieldConstraints: NonEmptySet<FieldConstraint>,
+    ) : Constraints {
         init {
             check(fieldConstraints.isNotEmpty())
         }
@@ -132,11 +146,13 @@ sealed interface Constraints : java.io.Serializable {
     }
 
     companion object {
-
         /**
          * Creates a [Constraints] given a [list of field constraints][FieldConstraint] and/or [limitDisclosure]
          */
-        fun of(fs: List<FieldConstraint>?, limitDisclosure: LimitDisclosure?): Constraints? =
+        fun of(
+            fs: List<FieldConstraint>?,
+            limitDisclosure: LimitDisclosure?,
+        ): Constraints? =
             when {
                 !fs.isNullOrEmpty() && limitDisclosure != null -> FieldsAndDisclosure(fs, limitDisclosure)
                 !fs.isNullOrEmpty() && limitDisclosure == null -> Fields(fs)
@@ -148,11 +164,18 @@ sealed interface Constraints : java.io.Serializable {
 
 @Serializable
 @JvmInline
-value class Group(val value: String) : java.io.Serializable
+value class Group(
+    val value: String,
+) : java.io.Serializable
 
 sealed interface From : java.io.Serializable {
-    data class FromGroup(val group: Group) : From
-    data class FromNested(val nested: List<SubmissionRequirement>) : From
+    data class FromGroup(
+        val group: Group,
+    ) : From
+
+    data class FromNested(
+        val nested: List<SubmissionRequirement>,
+    ) : From
 }
 
 sealed interface Rule : java.io.Serializable {
@@ -160,7 +183,11 @@ sealed interface Rule : java.io.Serializable {
         private fun readResolve(): Any = All
     }
 
-    data class Pick(val count: Int?, val min: Int?, val max: Int?) : Rule {
+    data class Pick(
+        val count: Int?,
+        val min: Int?,
+        val max: Int?,
+    ) : Rule {
         init {
             count?.let { require(it > 0) { "Count must be greater than zero" } }
             min?.let { require(it >= 0) { "Min must be greater than or equal to zero" } }
@@ -186,7 +213,9 @@ fun SubmissionRequirement.allGroups(): Set<Group> =
 
 @Serializable
 @JvmInline
-value class InputDescriptorId(val value: String) : java.io.Serializable
+value class InputDescriptorId(
+    val value: String,
+) : java.io.Serializable
 
 /**
  * Input Descriptors are objects used to describe the information a Verifier requires of a Holder.
@@ -229,7 +258,6 @@ data class PresentationDefinition(
     val inputDescriptors: List<InputDescriptor>,
     @SerialName("submission_requirements") val submissionRequirements: List<SubmissionRequirement>? = null,
 ) : java.io.Serializable {
-
     init {
 
         /**

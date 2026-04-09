@@ -18,7 +18,6 @@ package eu.europa.ec.eudi.prex
 import java.io.InputStream
 
 interface JsonParser {
-
     /**
      * Tries to parse the given [inputStream] into a [PresentationDefinition].
      * It is assumed that the [inputStream] corresponds to a Json object that either contains

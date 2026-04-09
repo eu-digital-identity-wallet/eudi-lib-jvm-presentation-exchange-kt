@@ -27,7 +27,6 @@ import eu.europa.ec.eudi.prex.InputDescriptorEvaluation.NotMatchedFieldConstrain
  *
  */
 internal object InputDescriptorEvaluator {
-
     /**
      * Evaluates whether a given [claim] satisfies a set of [inputDescriptors]
      */
@@ -38,12 +37,13 @@ internal object InputDescriptorEvaluator {
     ): Map<InputDescriptorId, InputDescriptorEvaluation> {
         val claimJsonString = claim.asJsonString()
         return inputDescriptors.associate {
-            it.id to evaluate(
-                presentationDefinitionFormat,
-                it,
-                claim.format,
-                claimJsonString,
-            )
+            it.id to
+                evaluate(
+                    presentationDefinitionFormat,
+                    it,
+                    claim.format,
+                    claimJsonString,
+                )
         }
     }
 

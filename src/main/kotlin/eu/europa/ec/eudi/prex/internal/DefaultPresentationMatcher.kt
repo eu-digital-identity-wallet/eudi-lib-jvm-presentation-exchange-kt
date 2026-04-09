@@ -28,12 +28,15 @@ import eu.europa.ec.eudi.prex.internal.DefaultPresentationMatcher.Evaluator
 private typealias ClaimsEvaluation = Map<ClaimId, Map<InputDescriptorId, InputDescriptorEvaluation>>
 
 internal object DefaultPresentationMatcher : PresentationMatcher {
-
-    override fun match(pd: PresentationDefinition, claims: List<Claim>): Match {
+    override fun match(
+        pd: PresentationDefinition,
+        claims: List<Claim>,
+    ): Match {
         // Evaluate the input descriptor match for all descriptors and claims
-        val claimsEvaluation = claims.associate { claim ->
-            claim.uniqueId to InputDescriptorEvaluator.matchInputDescriptors(pd.format, pd.inputDescriptors, claim)
-        }
+        val claimsEvaluation =
+            claims.associate { claim ->
+                claim.uniqueId to InputDescriptorEvaluator.matchInputDescriptors(pd.format, pd.inputDescriptors, claim)
+            }
         // split evaluations to a candidate and not matching
         val (candidateClaims, notMatchingClaims) = splitPerDescriptor(pd, claimsEvaluation)
         // choose evaluator based on the presentation definition content
@@ -109,10 +112,11 @@ internal object DefaultPresentationMatcher : PresentationMatcher {
      * An alternative [Evaluator] that takes into account [PresentationDefinition.submissionRequirements].
      * It can  be used only if presentation definition contains such requirements
      */
-    private val matchSubmissionRequirements = Evaluator { pd, _, _ ->
-        checkNotNull(pd.submissionRequirements)
-        error("Not yet implemented")
-    }
+    private val matchSubmissionRequirements =
+        Evaluator { pd, _, _ ->
+            checkNotNull(pd.submissionRequirements)
+            error("Not yet implemented")
+        }
 
     private inline fun <reified E> ClaimsEvaluation.entriesFor(inputDescriptorId: InputDescriptorId): Map<ClaimId, E> =
         mapValues { it.value[inputDescriptorId] }

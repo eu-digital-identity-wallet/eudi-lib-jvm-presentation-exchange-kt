@@ -47,7 +47,10 @@ internal object FormatSerializer : KSerializer<Format> {
         return Format.format(data)
     }
 
-    override fun serialize(encoder: Encoder, value: Format) {
+    override fun serialize(
+        encoder: Encoder,
+        value: Format,
+    ) {
         val data = value.jsonObject()
         encoder.encodeSerializableValue(delegateSerializer, data)
     }
@@ -58,18 +61,19 @@ internal object FormatSerializer : KSerializer<Format> {
  */
 @OptIn(ExperimentalSerializationApi::class)
 internal object ConstraintsSerializer : KSerializer<Constraints> {
-
-    private fun limitDisclosure(s: String): LimitDisclosure = when (s) {
-        "preferred" -> LimitDisclosure.PREFERRED
-        "required" -> LimitDisclosure.REQUIRED
-        else -> throw SerializationException("$s not a valid limit disclosure value")
-    }
+    private fun limitDisclosure(s: String): LimitDisclosure =
+        when (s) {
+            "preferred" -> LimitDisclosure.PREFERRED
+            "required" -> LimitDisclosure.REQUIRED
+            else -> throw SerializationException("$s not a valid limit disclosure value")
+        }
 
     private val LimitDisclosure.jsonName
-        get(): String = when (this) {
-            LimitDisclosure.REQUIRED -> "required"
-            LimitDisclosure.PREFERRED -> "preferred"
-        }
+        get(): String =
+            when (this) {
+                LimitDisclosure.REQUIRED -> "required"
+                LimitDisclosure.PREFERRED -> "preferred"
+            }
 
     /**
      * Helper class to represents [Constraints] in Json
@@ -91,7 +95,10 @@ internal object ConstraintsSerializer : KSerializer<Constraints> {
             ?: throw SerializationException("At least on of fields or limitDisclosure is required")
     }
 
-    override fun serialize(encoder: Encoder, value: Constraints) {
+    override fun serialize(
+        encoder: Encoder,
+        value: Constraints,
+    ) {
         val ldStr = value.limitDisclosure()?.jsonName
         val constraintJson = ConstraintsJson(value.fields(), ldStr)
         delegateSerializer.serialize(encoder, constraintJson)
@@ -111,7 +118,10 @@ internal object JsonPathSerializer : KSerializer<JsonPath> {
             ?: throw SerializationException("Not a valid JsonPath expression")
     }
 
-    override fun serialize(encoder: Encoder, value: JsonPath) {
+    override fun serialize(
+        encoder: Encoder,
+        value: JsonPath,
+    ) {
         encoder.encodeString(value.value)
     }
 }
@@ -130,7 +140,10 @@ internal object FilterSerializer : KSerializer<Filter> {
         return Filter.filter(data)
     }
 
-    override fun serialize(encoder: Encoder, value: Filter) {
+    override fun serialize(
+        encoder: Encoder,
+        value: Filter,
+    ) {
         val data = value.jsonObject()
         encoder.encodeSerializableValue(delegateSerializer, data)
     }
@@ -138,7 +151,6 @@ internal object FilterSerializer : KSerializer<Filter> {
 
 @OptIn(ExperimentalSerializationApi::class)
 internal object SubmissionRequirementSerializer : KSerializer<SubmissionRequirement> {
-
     @Serializable
     private enum class RuleType {
         @SerialName("all")
@@ -169,43 +181,60 @@ internal object SubmissionRequirementSerializer : KSerializer<SubmissionRequirem
         return fromJson(data)
     }
 
-    override fun serialize(encoder: Encoder, value: SubmissionRequirement) {
+    override fun serialize(
+        encoder: Encoder,
+        value: SubmissionRequirement,
+    ) {
         val data = toJson(value)
         encoder.encodeSerializableValue(delegateSerializer, data)
     }
 
     private fun fromJson(data: JsonSubmissionRequirement): SubmissionRequirement {
-        val from = when {
-            (data.from != null && data.fromNested != null) || (data.from == null && data.fromNested == null) ->
-                throw SerializationException("one of  from or from_nested must be provided")
+        val from =
+            when {
+                (data.from != null && data.fromNested != null) || (data.from == null && data.fromNested == null) -> {
+                    throw SerializationException("one of  from or from_nested must be provided")
+                }
 
-            data.from != null -> From.FromGroup(data.from)
-            data.fromNested != null -> From.FromNested(data.fromNested.map { fromJson(it) })
-            else -> error("Something wrong")
-        }
+                data.from != null -> {
+                    From.FromGroup(data.from)
+                }
 
-        val rule = when (data.rule) {
-            RuleType.ALL -> Rule.All
-            RuleType.PICK -> Rule.Pick(count = data.count, min = data.min, max = data.max)
-        }
+                data.fromNested != null -> {
+                    From.FromNested(data.fromNested.map { fromJson(it) })
+                }
+
+                else -> {
+                    error("Something wrong")
+                }
+            }
+
+        val rule =
+            when (data.rule) {
+                RuleType.ALL -> Rule.All
+                RuleType.PICK -> Rule.Pick(count = data.count, min = data.min, max = data.max)
+            }
         return SubmissionRequirement(rule = rule, from = from, name = data.name, purpose = data.purpose)
     }
 
     private fun toJson(value: SubmissionRequirement): JsonSubmissionRequirement {
-        val (count, min, max) = when (value.rule) {
-            is Rule.Pick -> Triple(value.rule.count, value.rule.min, value.rule.max)
-            is Rule.All -> Triple(null, null, null)
-        }
+        val (count, min, max) =
+            when (value.rule) {
+                is Rule.Pick -> Triple(value.rule.count, value.rule.min, value.rule.max)
+                is Rule.All -> Triple(null, null, null)
+            }
 
-        val (from, fromNested) = when (value.from) {
-            is From.FromGroup -> value.from.group to null
-            is From.FromNested -> null to value.from.nested.map { toJson(it) }
-        }
+        val (from, fromNested) =
+            when (value.from) {
+                is From.FromGroup -> value.from.group to null
+                is From.FromNested -> null to value.from.nested.map { toJson(it) }
+            }
         return JsonSubmissionRequirement(
-            rule = when (value.rule) {
-                is Rule.All -> RuleType.ALL
-                is Rule.Pick -> RuleType.PICK
-            },
+            rule =
+                when (value.rule) {
+                    is Rule.All -> RuleType.ALL
+                    is Rule.Pick -> RuleType.PICK
+                },
             count = count,
             min = min,
             max = max,

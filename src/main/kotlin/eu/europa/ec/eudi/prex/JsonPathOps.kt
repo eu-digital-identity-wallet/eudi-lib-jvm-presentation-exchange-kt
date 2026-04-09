@@ -24,7 +24,6 @@ import com.nfeld.jsonpathkt.JsonPath as ExternalJsonPath
  * JSON Path related operations
  */
 internal object JsonPathOps {
-
     /**
      * Checks that the provided [path][String] is JSON Path
      */
@@ -34,13 +33,17 @@ internal object JsonPathOps {
      * Extracts from given [JSON][jsonString] the content
      * at [path][jsonPath]. Returns the value found at the path, if found
      */
-    internal fun getJsonAtPath(jsonPath: JsonPath, jsonString: String): String? =
+    internal fun getJsonAtPath(
+        jsonPath: JsonPath,
+        jsonString: String,
+    ): String? =
         ExternalJsonPath
             .compile(jsonPath.value)
             .resolveOrNull(JsonSupport.parseToJsonElement(jsonString))
             ?.let { JsonSupport.encodeToString(it) }
 
-    private fun String.toJsonPath(): Result<ExternalJsonPath> = runCatching {
-        ExternalJsonPath.compile(this)
-    }
+    private fun String.toJsonPath(): Result<ExternalJsonPath> =
+        runCatching {
+            ExternalJsonPath.compile(this)
+        }
 }

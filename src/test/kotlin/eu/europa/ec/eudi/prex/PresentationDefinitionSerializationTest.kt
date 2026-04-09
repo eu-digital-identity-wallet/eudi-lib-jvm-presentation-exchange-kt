@@ -22,7 +22,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 internal class PresentationDefinitionSerializationTest {
-
     @Test
     fun `should serialize format test`() {
         testPresentationSerialization("v2.0.0/presentation-definition/format_example.json")
