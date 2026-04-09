@@ -5,10 +5,10 @@ kotlinxSerialization = "1.9.0"
 dokka = "2.2.0"
 spotless = "8.4.0"
 ktlint = "1.8.0"
-dependencycheck = "12.1.1"
+dependencycheck = "12.2.0"
 jsonKotlinSchema = "0.57"
 jsonpathkt = "3.0.2"
-mavenPublish = "0.35.0"
+mavenPublish = "0.36.0"
 kover = "0.9.8"
 
 [libraries]
