@@ -2,7 +2,7 @@
 java = "17"
 kotlin = "2.2.21"
 kotlinxSerialization = "1.9.0"
-dokka = "2.1.0"
+dokka = "2.2.0"
 spotless = "6.25.0"
 ktlint = "0.50.0"
 dependencycheck = "12.1.1"
