@@ -27,15 +27,16 @@ import eu.europa.ec.eudi.prex.JsonPathOps
  * Evaluates whether a claim satisfies a field constraint
  */
 internal object FieldConstraintMatcher {
-
     /**
      * Evaluates whether a claim satisfies a field constraint
      */
-    internal fun match(fieldConstraint: FieldConstraint, claim: String): FieldQueryResult {
+    internal fun match(
+        fieldConstraint: FieldConstraint,
+        claim: String,
+    ): FieldQueryResult {
         // Check whether the provided json satisfies the constraints of the filter
         // if the field constraint doesn't contain a filter, true is being returned
-        fun matchFilter(j: String): Boolean =
-            with(FilterOps) { fieldConstraint.filter?.isMatchedBy(j) } ?: true
+        fun matchFilter(j: String): Boolean = with(FilterOps) { fieldConstraint.filter?.isMatchedBy(j) } ?: true
 
         // Tries to locate within the JSON the specified path.
         // If there is a value checks it against the field constraint filter

@@ -22,7 +22,6 @@ import eu.europa.ec.eudi.prex.internal.DefaultPresentationMatcher
  * Entry point to the Presentation Exchange library
  */
 object PresentationExchange {
-
     /**
      * JSON serialization/deserialization
      */

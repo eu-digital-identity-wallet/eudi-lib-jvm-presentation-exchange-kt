@@ -19,14 +19,16 @@ import eu.europa.ec.eudi.prex.Filter
 import net.pwall.json.schema.JSONSchema
 
 internal object FilterOps {
-
     /**
      * Checks whether a given [json] satisfies the
      * constraints described in the [Filter]
      */
     internal fun Filter.isMatchedBy(json: String): Boolean = isValid(this, json)
 
-    private fun isValid(f: Filter, j: String): Boolean {
+    private fun isValid(
+        f: Filter,
+        j: String,
+    ): Boolean {
         val jsonSchema = JSONSchema.parse(f.json)
         return jsonSchema.validate(j, io.kjson.pointer.JSONPointer.root)
     }

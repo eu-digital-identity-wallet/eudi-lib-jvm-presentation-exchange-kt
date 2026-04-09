@@ -20,7 +20,6 @@ import kotlin.test.Test
 import kotlin.test.fail
 
 class PresentationDefinitionTest {
-
     @Test
     fun `format test`() {
         testParseDefinition("v2.0.0/presentation-definition/format_example.json")
@@ -58,10 +57,10 @@ class PresentationDefinitionTest {
     }
 
     private fun testParseDefinition(f: String): PresentationDefinition =
-        PresentationExchange.jsonParser.decodePresentationDefinition(load(f)!!)
+        PresentationExchange.jsonParser
+            .decodePresentationDefinition(load(f)!!)
             .also { println(it) }
             .fold(onSuccess = { it }, onFailure = { fail(it.message, it) })
 
-    private fun load(f: String): InputStream? =
-        PresentationDefinitionTest::class.java.classLoader.getResourceAsStream(f)
+    private fun load(f: String): InputStream? = PresentationDefinitionTest::class.java.classLoader.getResourceAsStream(f)
 }
